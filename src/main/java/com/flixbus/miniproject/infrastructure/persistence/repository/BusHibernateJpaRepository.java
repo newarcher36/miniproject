@@ -5,6 +5,7 @@ import com.flixbus.miniproject.domain.bus.BusRepository;
 import com.flixbus.miniproject.infrastructure.persistence.entity.BusEntity;
 
 import javax.inject.Named;
+import java.util.Optional;
 
 import static com.flixbus.miniproject.domain.bus.Bus.BusBuilder.aBus;
 import static com.flixbus.miniproject.infrastructure.persistence.entity.BusEntity.BusEntityBuilder.aBusEntity;
@@ -25,22 +26,24 @@ public class BusHibernateJpaRepository implements BusRepository {
     }
 
     @Override
-    public Bus findBusByPlateNumber(String plateNumber) {
-        return mapToBus(busJpaRepository.findBusEntityByPlateNumber(plateNumber));
+    public boolean existsByPlateNumber(String plateNumber) {
+        return busJpaRepository.existsBusEntityByPlateNumber(plateNumber);
+
     }
 
     @Override
-    public Bus update(Bus bus) {
-        return null;
+    public Optional<Bus> findByBusId(Long busId) {
+        Optional<BusEntity> optional = busJpaRepository.findById(busId);
+        return optional.map(this::mapToBus);
     }
 
-    private Bus mapToBus(BusEntity savedBus) {
+    private Bus mapToBus(BusEntity busEntity) {
         return aBus()
-                .withId(savedBus.getId())
-                .withPlateNumber(savedBus.getPlateNumber())
-                .withBusColor(savedBus.getBusColor())
-                .withBusType(savedBus.getBusType())
-                .withCapacity(savedBus.getCapacity())
+                .withId(busEntity.getId())
+                .withPlateNumber(busEntity.getPlateNumber())
+                .withBusColor(busEntity.getBusColor())
+                .withBusType(busEntity.getBusType())
+                .withCapacity(busEntity.getCapacity())
                 .build();
     }
 

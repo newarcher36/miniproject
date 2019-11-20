@@ -27,6 +27,6 @@ public class SaveBus {
     }
 
     private boolean plateNumberAlreadyExist(String plateNumber) {
-        return busRepository.findBusByPlateNumber(plateNumber) != null;
+        return busRepository.existsByPlateNumber(plateNumber);
     }
 }

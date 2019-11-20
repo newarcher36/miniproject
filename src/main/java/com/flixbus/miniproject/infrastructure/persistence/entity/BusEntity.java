@@ -17,22 +17,24 @@ public class BusEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private final Long id;
+    private Long id;
 
     @Column(unique = true, nullable = false)
-    private final String plateNumber;
+    private String plateNumber;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private final BusType busType;
+    private BusType busType;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private final Color busColor;
+    private Color busColor;
 
     @Max(70)
     @Column(nullable = false)
-    private final int capacity;
+    private int capacity;
+
+    public BusEntity(){}
 
     private BusEntity(Long id, String plateNumber, BusType busType, Color busColor, int capacity) {
         this.id = id;

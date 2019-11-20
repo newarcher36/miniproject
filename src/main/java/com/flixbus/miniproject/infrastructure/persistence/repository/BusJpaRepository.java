@@ -5,5 +5,5 @@ import org.springframework.data.repository.CrudRepository;
 
 public interface BusJpaRepository extends CrudRepository<BusEntity, Long> {
 
-    BusEntity findBusEntityByPlateNumber(String plateNumber);
+    boolean existsBusEntityByPlateNumber(String plateNumber);
 }

@@ -1,10 +1,12 @@
 package com.flixbus.miniproject.domain.bus;
 
+import java.util.Optional;
+
 public interface BusRepository {
 
     Bus save(Bus bus);
 
-    Bus findBusByPlateNumber(String plateNumber);
+    boolean existsByPlateNumber(String plateNumber);
 
-    Bus update(Bus bus);
+    Optional<Bus> findByBusId(Long busId);
 }

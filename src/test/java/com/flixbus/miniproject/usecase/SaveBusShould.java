@@ -33,10 +33,10 @@ class SaveBusShould {
     @Test void
     save_a_bus() {
         Bus busToSave = aBus();
-        Bus aSavedBus = aBus();
+        Bus savedBus = aBus();
 
-        given(busRepository.findBusByPlateNumber(PLATE_NUMBER)).willReturn(null);
-        given(busRepository.save(busToSave)).willReturn(aSavedBus);
+        given(busRepository.existsByPlateNumber(PLATE_NUMBER)).willReturn(false);
+        given(busRepository.save(busToSave)).willReturn(savedBus);
 
         Bus actual = saveBus.save(busToSave);
 
@@ -55,7 +55,7 @@ class SaveBusShould {
                 .withCapacity(50)
                 .build();
 
-        given(busRepository.findBusByPlateNumber(PLATE_NUMBER)).willReturn(aBus());
+        given(busRepository.existsByPlateNumber(PLATE_NUMBER)).willReturn(true);
 
         Throwable throwable = catchThrowable(() -> saveBus.save(busToSave));
 
