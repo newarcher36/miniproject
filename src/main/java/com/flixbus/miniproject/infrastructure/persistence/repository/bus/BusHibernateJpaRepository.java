@@ -1,28 +1,30 @@
-package com.flixbus.miniproject.infrastructure.persistence.repository;
+package com.flixbus.miniproject.infrastructure.persistence.repository.bus;
 
 import com.flixbus.miniproject.domain.bus.Bus;
 import com.flixbus.miniproject.domain.bus.BusRepository;
 import com.flixbus.miniproject.infrastructure.persistence.entity.BusEntity;
+import com.flixbus.miniproject.infrastructure.persistence.mapper.BusEntityToBusMapper;
 
 import javax.inject.Named;
 import java.util.Optional;
 
-import static com.flixbus.miniproject.domain.bus.Bus.BusBuilder.aBus;
 import static com.flixbus.miniproject.infrastructure.persistence.entity.BusEntity.BusEntityBuilder.aBusEntity;
 
 @Named
 public class BusHibernateJpaRepository implements BusRepository {
 
     private final BusJpaRepository busJpaRepository;
+    private final BusEntityToBusMapper mapper;
 
-    public BusHibernateJpaRepository(BusJpaRepository busJpaRepository) {
+    public BusHibernateJpaRepository(BusJpaRepository busJpaRepository, BusEntityToBusMapper mapper) {
         this.busJpaRepository = busJpaRepository;
+        this.mapper = mapper;
     }
 
     @Override
-    public Bus save(Bus bus) {
-        BusEntity busEntity = mapToBusEntity(bus);
-        return mapToBus(busJpaRepository.save(busEntity));
+    public void save(Bus bus) {
+        BusEntity busEntity = map(bus);
+        busJpaRepository.save(busEntity);
     }
 
     @Override
@@ -34,26 +36,21 @@ public class BusHibernateJpaRepository implements BusRepository {
     @Override
     public Optional<Bus> findByBusId(Long busId) {
         Optional<BusEntity> optional = busJpaRepository.findById(busId);
-        return optional.map(this::mapToBus);
+        return optional.map(mapper::map);
     }
 
-    private Bus mapToBus(BusEntity busEntity) {
-        return aBus()
-                .withId(busEntity.getId())
-                .withPlateNumber(busEntity.getPlateNumber())
-                .withBusColor(busEntity.getBusColor())
-                .withBusType(busEntity.getBusType())
-                .withCapacity(busEntity.getCapacity())
-                .build();
+    @Override
+    public void deleteBusById(long busId) {
+        busJpaRepository.deleteById(busId);
     }
 
-    private BusEntity mapToBusEntity(Bus bus) {
+    private BusEntity map(Bus bus) {
         return aBusEntity()
                 .withId(bus.getId())
                 .withPlateNumber(bus.getPlateNumber())
                 .withBusType(bus.getBusType())
                 .withBusColor(bus.getBusColor())
-                .withCapacity(bus.getCapacity())
+                .withCapacity(bus.getPassengerCapacity())
                 .build();
     }
 }

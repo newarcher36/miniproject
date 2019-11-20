@@ -1,27 +1,35 @@
 package com.flixbus.miniproject.api;
 
 import com.flixbus.miniproject.api.dto.BusDto;
+import com.flixbus.miniproject.api.mapper.BusDtoToBusMapper;
 import com.flixbus.miniproject.domain.bus.Bus;
 import com.flixbus.miniproject.domain.bus.BusType;
 import com.flixbus.miniproject.domain.bus.Color;
+import com.flixbus.miniproject.usecase.DeleteBus;
 import com.flixbus.miniproject.usecase.EditBus;
 import com.flixbus.miniproject.usecase.GetBus;
 import com.flixbus.miniproject.usecase.SaveBus;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import static com.flixbus.miniproject.domain.bus.Bus.BusBuilder;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.refEq;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 class BusControllerShould {
 
     private BusController busController;
+
+    @Captor
+    private ArgumentCaptor<Bus> captor;
 
     @Mock
     private SaveBus saveBus;
@@ -32,22 +40,32 @@ class BusControllerShould {
     @Mock
     private GetBus getBus;
 
+    @Mock
+    private DeleteBus deleteBus;
+
+    @Mock
+    private BusDtoToBusMapper mapper;
+
     @BeforeEach
     void init() {
-        busController = new BusController(saveBus, editBus, getBus);
+        busController = new BusController(saveBus, editBus, getBus, deleteBus, mapper);
     }
 
     @Test void
     save_a_bus() {
 
         BusDto busDto = aBusDto();
-        Bus busToSave = aBus();
+        Bus bus = aBus();
 
-        given(saveBus.save(refEq(busToSave))).willReturn(busToSave);
+        given(mapper.map(busDto)).willReturn(bus);
 
-        BusDto savedBus = busController.createBus(busDto);
+        busController.createBus(busDto);
 
-        assertThat(savedBus)
+        verify(saveBus).execute(captor.capture());
+
+        Bus actual = captor.getValue();
+
+        Assertions.assertThat(actual)
                 .usingRecursiveComparison()
                 .isEqualTo(busDto);
     }
@@ -56,15 +74,19 @@ class BusControllerShould {
     edit_a_bus() {
 
         BusDto busDto = aBusDto();
-        Bus busToEdit = aBus();
+        Bus bus = aBus();
 
-        given(editBus.edit(refEq(busToEdit))).willReturn(busToEdit);
+        given(mapper.map(busDto)).willReturn(bus);
 
-        BusDto savedBus = busController.editBus(busDto);
+        busController.editBus(busDto);
 
-        assertThat(savedBus)
+        verify(editBus).execute(captor.capture());
+
+        Bus actual = captor.getValue();
+
+        Assertions.assertThat(actual)
                 .usingRecursiveComparison()
-                .isEqualTo(busToEdit);
+                .isEqualTo(busDto);
     }
 
     @Test void
@@ -77,6 +99,14 @@ class BusControllerShould {
         assertThat(retrievedBus)
                 .usingRecursiveComparison()
                 .isEqualTo(aBus());
+    }
+
+    @Test void
+    delete_a_bus_by_id() {
+
+        busController.deleteBusById(1L);
+
+        verify(deleteBus).deleteBusById(1L);
     }
 
     private Bus aBus() {

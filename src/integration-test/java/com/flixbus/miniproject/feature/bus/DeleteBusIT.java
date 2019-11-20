@@ -1,11 +1,11 @@
-package com.flixbus.miniproject.feature;
+package com.flixbus.miniproject.feature.bus;
 
 import com.flixbus.miniproject.domain.bus.BusType;
 import com.flixbus.miniproject.domain.bus.Color;
+import com.flixbus.miniproject.feature.AbstractIT;
 import com.flixbus.miniproject.infrastructure.persistence.entity.BusEntity;
-import com.flixbus.miniproject.infrastructure.persistence.repository.BusJpaRepository;
+import com.flixbus.miniproject.infrastructure.persistence.repository.bus.BusJpaRepository;
 import org.junit.jupiter.api.Test;
-import org.springframework.test.annotation.DirtiesContext;
 
 import javax.inject.Inject;
 
@@ -13,23 +13,22 @@ import static io.restassured.RestAssured.given;
 import static java.net.HttpURLConnection.HTTP_NOT_FOUND;
 import static java.net.HttpURLConnection.HTTP_OK;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
-import static org.springframework.test.annotation.DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD;
 
-@DirtiesContext(classMode = BEFORE_EACH_TEST_METHOD)
-class GetBusIT extends AbstractIT {
+
+class DeleteBusIT extends AbstractIT {
 
     @Inject
     private BusJpaRepository busJpaRepository;
 
     @Test void
-    find_a_bus_by_id() {
+    delete_a_bus_by_id() {
 
         busJpaRepository.save(aBusEntity());
 
         given()
                 .contentType(APPLICATION_JSON_VALUE)
                 .when()
-                .get("/v1/buses/{busId}", 1)
+                .delete("/v1/buses/{busId}", 1)
                 .then()
                 .statusCode(HTTP_OK)
                 .extract()
@@ -37,11 +36,12 @@ class GetBusIT extends AbstractIT {
     }
 
     @Test void
-    fail_when_bus_not_found_by_id() {
+    fail_when_delete_a_bus_by_id() {
+
         given()
                 .contentType(APPLICATION_JSON_VALUE)
                 .when()
-                .get("/v1/buses/{busId}", 1)
+                .delete("/v1/buses/{busId}", 1)
                 .then()
                 .statusCode(HTTP_NOT_FOUND)
                 .extract()
@@ -57,3 +57,4 @@ class GetBusIT extends AbstractIT {
                 .build();
     }
 }
+

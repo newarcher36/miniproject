@@ -32,16 +32,16 @@ public class BusEntity {
 
     @Max(70)
     @Column(nullable = false)
-    private int capacity;
+    private int passengerCapacity;
 
     public BusEntity(){}
 
-    private BusEntity(Long id, String plateNumber, BusType busType, Color busColor, int capacity) {
+    private BusEntity(Long id, String plateNumber, BusType busType, Color busColor, int passengerCapacity) {
         this.id = id;
         this.plateNumber = plateNumber;
         this.busType = busType;
         this.busColor = busColor;
-        this.capacity = capacity;
+        this.passengerCapacity = passengerCapacity;
     }
 
     public Long getId() {
@@ -60,8 +60,8 @@ public class BusEntity {
         return busColor;
     }
 
-    public int getCapacity() {
-        return capacity;
+    public int getPassengerCapacity() {
+        return passengerCapacity;
     }
 
     public static final class BusEntityBuilder {

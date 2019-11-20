@@ -1,10 +1,11 @@
-package com.flixbus.miniproject.usecase;
+package com.flixbus.miniproject.usecase.bus;
 
 import com.flixbus.miniproject.domain.bus.Bus;
 import com.flixbus.miniproject.domain.bus.BusRepository;
 import com.flixbus.miniproject.domain.bus.BusType;
 import com.flixbus.miniproject.domain.bus.Color;
 import com.flixbus.miniproject.domain.exception.DuplicatePlateNumberException;
+import com.flixbus.miniproject.usecase.SaveBus;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -15,6 +16,7 @@ import static com.flixbus.miniproject.domain.bus.Bus.BusBuilder;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 class SaveBusShould {
@@ -32,17 +34,14 @@ class SaveBusShould {
 
     @Test void
     save_a_bus() {
+
         Bus busToSave = aBus();
-        Bus savedBus = aBus();
 
         given(busRepository.existsByPlateNumber(PLATE_NUMBER)).willReturn(false);
-        given(busRepository.save(busToSave)).willReturn(savedBus);
 
-        Bus actual = saveBus.save(busToSave);
+        saveBus.execute(busToSave);
 
-        assertThat(actual)
-                .usingRecursiveComparison()
-                .isEqualTo(busToSave);
+        verify(busRepository).save(busToSave);
     }
 
     @Test void
@@ -57,7 +56,7 @@ class SaveBusShould {
 
         given(busRepository.existsByPlateNumber(PLATE_NUMBER)).willReturn(true);
 
-        Throwable throwable = catchThrowable(() -> saveBus.save(busToSave));
+        Throwable throwable = catchThrowable(() -> saveBus.execute(busToSave));
 
         assertThat(throwable)
                 .isInstanceOf(DuplicatePlateNumberException.class)

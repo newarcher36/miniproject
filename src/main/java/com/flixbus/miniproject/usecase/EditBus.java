@@ -16,17 +16,17 @@ public class EditBus {
         this.busRepository = busRepository;
     }
 
-    public Bus edit(Bus busToEdit) {
+    public void execute(Bus bus) {
 
-        long busId = busToEdit.getId();
-        Bus currentBus = busRepository.findByBusId(busToEdit.getId())
+        long busId = bus.getId();
+        Bus currentBus = busRepository.findByBusId(bus.getId())
                 .orElseThrow(() -> new BusNotFoundException("Bus not found with id: " + busId));
 
-        if (hasPlateNumberChanged(busToEdit, currentBus)) {
-            checkPlateNumberDuplicated(busToEdit);
+        if (hasPlateNumberChanged(bus, currentBus)) {
+            checkPlateNumberDuplicated(bus);
         }
 
-        return busRepository.save(busToEdit);
+        busRepository.save(bus);
     }
 
     private boolean hasPlateNumberChanged(Bus busToEdit, Bus currentBus) {

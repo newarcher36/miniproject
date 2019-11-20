@@ -1,4 +1,4 @@
-package com.flixbus.miniproject.usecase;
+package com.flixbus.miniproject.usecase.bus;
 
 import com.flixbus.miniproject.domain.bus.Bus;
 import com.flixbus.miniproject.domain.bus.BusRepository;
@@ -6,6 +6,7 @@ import com.flixbus.miniproject.domain.bus.BusType;
 import com.flixbus.miniproject.domain.bus.Color;
 import com.flixbus.miniproject.domain.exception.BusNotFoundException;
 import com.flixbus.miniproject.domain.exception.DuplicatePlateNumberException;
+import com.flixbus.miniproject.usecase.EditBus;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,6 +19,7 @@ import static com.flixbus.miniproject.domain.bus.Bus.BusBuilder;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 class EditBusShould {
@@ -40,13 +42,10 @@ class EditBusShould {
         Bus busToEdit = aBus();
 
         given(busRepository.findByBusId(1L)).willReturn(Optional.of(currentBus));
-        given(busRepository.save(busToEdit)).willReturn(busToEdit);
 
-        Bus editedBus = editBus.edit(busToEdit);
+        editBus.execute(busToEdit);
 
-        assertThat(editedBus)
-                .usingRecursiveComparison()
-                .isEqualTo(busToEdit);
+        verify(busRepository).save(busToEdit);
     }
 
     @Test void
@@ -62,13 +61,10 @@ class EditBusShould {
 
         given(busRepository.findByBusId(1L)).willReturn(Optional.of(currentBus));
         given(busRepository.existsByPlateNumber("4309JHT")).willReturn(false);
-        given(busRepository.save(busToEdit)).willReturn(busToEdit);
 
-        Bus editedBus = editBus.edit(busToEdit);
+        editBus.execute(busToEdit);
 
-        assertThat(editedBus)
-                .usingRecursiveComparison()
-                .isEqualTo(busToEdit);
+        verify(busRepository).save(busToEdit);
     }
 
     @Test void
@@ -77,7 +73,7 @@ class EditBusShould {
         Bus busToEdit = aBus();
         given(busRepository.findByBusId(busToEdit.getId())).willReturn(Optional.empty());
 
-        Throwable throwable = catchThrowable(() -> editBus.edit(busToEdit));
+        Throwable throwable = catchThrowable(() -> editBus.execute(busToEdit));
 
         assertThat(throwable)
                 .isInstanceOf(BusNotFoundException.class)
@@ -99,7 +95,7 @@ class EditBusShould {
         given(busRepository.findByBusId(1L)).willReturn(Optional.of(currentBus));
         given(busRepository.existsByPlateNumber("4309JHT")).willReturn(true);
 
-        Throwable throwable = catchThrowable(() -> editBus.edit(busToEdit));
+        Throwable throwable = catchThrowable(() -> editBus.execute(busToEdit));
 
         assertThat(throwable)
                 .isInstanceOf(DuplicatePlateNumberException.class)

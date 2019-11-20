@@ -1,20 +1,19 @@
-package com.flixbus.miniproject.feature;
+package com.flixbus.miniproject.feature.bus;
 
 import com.flixbus.miniproject.api.dto.BusDto;
 import com.flixbus.miniproject.domain.bus.BusRepository;
 import com.flixbus.miniproject.domain.bus.BusType;
 import com.flixbus.miniproject.domain.bus.Color;
+import com.flixbus.miniproject.feature.AbstractIT;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.SpyBean;
-import org.springframework.test.annotation.DirtiesContext;
 
 import static io.restassured.RestAssured.given;
 import static java.net.HttpURLConnection.*;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
-import static org.springframework.test.annotation.DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD;
 
-@DirtiesContext(classMode = BEFORE_EACH_TEST_METHOD)
+
 class SaveBusIT extends AbstractIT {
 
     private static final String PLATE_NUMBER = "8711HHL";

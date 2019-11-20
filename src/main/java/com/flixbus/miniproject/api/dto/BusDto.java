@@ -2,10 +2,12 @@ package com.flixbus.miniproject.api.dto;
 
 import com.flixbus.miniproject.domain.bus.BusType;
 import com.flixbus.miniproject.domain.bus.Color;
+import lombok.EqualsAndHashCode;
 
+@EqualsAndHashCode
 public class BusDto {
 
-    private final Long id;
+    private final long id;
     private final String plateNumber;
     private final BusType busType;
     private final Color busColor;
@@ -40,7 +42,8 @@ public class BusDto {
     }
 
     public static final class BusDtoBuilder {
-        private Long id;
+
+        private long id;
         private String plateNumber;
         private BusType busType;
         private Color busColor;

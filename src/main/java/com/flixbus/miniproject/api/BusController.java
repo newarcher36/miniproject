@@ -1,10 +1,13 @@
 package com.flixbus.miniproject.api;
 
 import com.flixbus.miniproject.api.dto.BusDto;
+import com.flixbus.miniproject.api.mapper.BusDtoToBusMapper;
 import com.flixbus.miniproject.domain.bus.Bus;
+import com.flixbus.miniproject.usecase.DeleteBus;
 import com.flixbus.miniproject.usecase.EditBus;
 import com.flixbus.miniproject.usecase.GetBus;
 import com.flixbus.miniproject.usecase.SaveBus;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -13,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import static com.flixbus.miniproject.domain.bus.Bus.*;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @RestController
@@ -23,23 +25,27 @@ public class BusController {
     private final SaveBus saveBus;
     private final EditBus editBus;
     private final GetBus getBus;
+    private final DeleteBus deleteBus;
+    private final BusDtoToBusMapper mapper;
 
-    public BusController(SaveBus saveBus, EditBus editBus, GetBus getBus) {
+    public BusController(SaveBus saveBus, EditBus editBus, GetBus getBus, DeleteBus deleteBus, BusDtoToBusMapper mapper) {
         this.saveBus = saveBus;
         this.editBus = editBus;
         this.getBus = getBus;
+        this.deleteBus = deleteBus;
+        this.mapper = mapper;
     }
 
     @PostMapping(produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
-    public BusDto createBus(@RequestBody BusDto busDto) {
-        Bus bus = mapBusDtoToBus(busDto);
-        return mapBusToBusDto(saveBus.save(bus));
+    public void createBus(@RequestBody BusDto busDto) {
+        Bus bus = mapper.map(busDto);
+        saveBus.execute(bus);
     }
 
     @PutMapping(produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
-    public BusDto editBus(@RequestBody BusDto busDto) {
-        Bus bus = mapBusDtoToBus(busDto);
-        return mapBusToBusDto(editBus.edit(bus));
+    public void editBus(@RequestBody BusDto busDto) {
+        Bus bus = mapper.map(busDto);
+        editBus.execute(bus);
     }
 
     @GetMapping(value = "{busId}", produces = APPLICATION_JSON_VALUE)
@@ -47,14 +53,9 @@ public class BusController {
         return mapBusToBusDto(getBus.getBusById(busId));
     }
 
-    private Bus mapBusDtoToBus(BusDto busDto) {
-        return BusBuilder.aBus()
-                .withId(busDto.getId())
-                .withPlateNumber(busDto.getPlateNumber())
-                .withBusType(busDto.getBusType())
-                .withBusColor(busDto.getBusColor())
-                .withCapacity(busDto.getCapacity())
-                .build();
+    @DeleteMapping(value = "{busId}")
+    public void deleteBusById(@PathVariable long busId) {
+        deleteBus.deleteBusById(busId);
     }
 
     private BusDto mapBusToBusDto(Bus bus) {
@@ -63,7 +64,7 @@ public class BusController {
                 .withPlateNumber(bus.getPlateNumber())
                 .withBusType(bus.getBusType())
                 .withBusColor(bus.getBusColor())
-                .withCapacity(bus.getCapacity())
+                .withCapacity(bus.getPassengerCapacity())
                 .build();
     }
 }

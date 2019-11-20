@@ -1,21 +1,24 @@
 package com.flixbus.miniproject.domain.bus;
 
+import lombok.EqualsAndHashCode;
+
 import static java.util.Objects.isNull;
 
+@EqualsAndHashCode
 public class Bus {
 
     private final Long id;
     private final String plateNumber;
     private final BusType busType;
     private final Color busColor;
-    private final int capacity;
+    private final int passengerCapacity;
 
-    private Bus(Long id, String plateNumber, BusType busType, Color busColor, int capacity) {
+    private Bus(Long id, String plateNumber, BusType busType, Color busColor, int passengerCapacity) {
         this.id = id;
         this.plateNumber = plateNumber;
         this.busType = busType;
         this.busColor = busColor;
-        this.capacity = capacity;
+        this.passengerCapacity = passengerCapacity;
         validate();
     }
 
@@ -35,8 +38,8 @@ public class Bus {
         return busColor;
     }
 
-    public int getCapacity() {
-        return capacity;
+    public int getPassengerCapacity() {
+        return passengerCapacity;
     }
 
     private void validate() {
@@ -52,7 +55,7 @@ public class Bus {
             throwException("Bus color is required");
         }
 
-        if (capacity < 0 || capacity > 70) {
+        if (passengerCapacity < 0 || passengerCapacity > 70) {
             throwException("Bus capacity must be between 0 and 70 people");
         }
     }

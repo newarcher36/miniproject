@@ -4,8 +4,9 @@ import com.flixbus.miniproject.domain.bus.Bus;
 import com.flixbus.miniproject.domain.bus.BusType;
 import com.flixbus.miniproject.domain.bus.Color;
 import com.flixbus.miniproject.infrastructure.persistence.entity.BusEntity;
-import com.flixbus.miniproject.infrastructure.persistence.repository.BusHibernateJpaRepository;
-import com.flixbus.miniproject.infrastructure.persistence.repository.BusJpaRepository;
+import com.flixbus.miniproject.infrastructure.persistence.mapper.BusEntityToBusMapper;
+import com.flixbus.miniproject.infrastructure.persistence.repository.bus.BusHibernateJpaRepository;
+import com.flixbus.miniproject.infrastructure.persistence.repository.bus.BusJpaRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -19,6 +20,7 @@ import static com.flixbus.miniproject.infrastructure.persistence.entity.BusEntit
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.refEq;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 class BusHibernateJpaRepositoryShould {
@@ -29,27 +31,27 @@ class BusHibernateJpaRepositoryShould {
     @Mock
     private BusJpaRepository busJpaRepository;
 
+    @Mock
+    private BusEntityToBusMapper mapper;
+
     @BeforeEach
     void init() {
-        busHibernateJpaRepository = new BusHibernateJpaRepository(busJpaRepository);
+        busHibernateJpaRepository = new BusHibernateJpaRepository(busJpaRepository, mapper);
     }
 
     @Test void
     save_a_bus() {
-        Bus bus = aBus();
+
         BusEntity busEntity = aBusEntity();
 
-        given(busJpaRepository.save(refEq(busEntity))).willReturn(busEntity);
+        busHibernateJpaRepository.save(aBus());
 
-        Bus savedBus = busHibernateJpaRepository.save(bus);
-
-        assertThat(savedBus)
-                .usingRecursiveComparison()
-                .isEqualTo(bus);
+        verify(busJpaRepository).save(refEq(busEntity));
     }
 
     @Test void
     true_when_a_given_bus_exists_by_plate_number() {
+
         given(busJpaRepository.existsBusEntityByPlateNumber(PLATE_NUMBER)).willReturn(true);
 
         boolean exists = busHibernateJpaRepository.existsByPlateNumber(PLATE_NUMBER);
@@ -59,6 +61,7 @@ class BusHibernateJpaRepositoryShould {
 
     @Test void
     false_when_a_given_bus_exists_by_plate_number() {
+
         given(busJpaRepository.existsBusEntityByPlateNumber(PLATE_NUMBER)).willReturn(false);
 
         boolean exists = busHibernateJpaRepository.existsByPlateNumber(PLATE_NUMBER);
@@ -66,12 +69,13 @@ class BusHibernateJpaRepositoryShould {
         assertThat(exists).isFalse();
     }
 
-    // TODO
     @Test void
     find_a_bus_by_id() {
+
         BusEntity busEntity = aBusEntity();
 
         given(busJpaRepository.findById(1L)).willReturn(Optional.of(busEntity));
+        given(mapper.map(busEntity)).willReturn(aBus());
 
         Optional<Bus> optionalBus = busHibernateJpaRepository.findByBusId(1L);
 
@@ -81,6 +85,14 @@ class BusHibernateJpaRepositoryShould {
         assertThat(optionalBus.get())
                 .usingRecursiveComparison()
                 .isEqualTo(busEntity);
+    }
+
+    @Test void
+    delete_a_bus_by_id() {
+
+        busHibernateJpaRepository.deleteBusById(1L);
+
+        verify(busJpaRepository).deleteById(1L);
     }
 
     private BusEntity aBusEntity() {

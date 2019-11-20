@@ -1,40 +1,42 @@
-package com.flixbus.miniproject.usecase;
+package com.flixbus.miniproject.usecase.bus;
 
 import com.flixbus.miniproject.domain.bus.Bus;
 import com.flixbus.miniproject.domain.bus.BusRepository;
 import com.flixbus.miniproject.domain.bus.BusType;
 import com.flixbus.miniproject.domain.bus.Color;
 import com.flixbus.miniproject.domain.exception.BusNotFoundException;
+import com.flixbus.miniproject.usecase.DeleteBus;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.BDDMockito;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
 
-import static com.flixbus.miniproject.domain.bus.Bus.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
-class GetBusShould {
+class DeleteBusShould {
 
-    private GetBus getBus;
+    private DeleteBus deleteBus;
 
     @Mock
     private BusRepository busRepository;
 
-
     @BeforeEach
     void init() {
-        getBus = new GetBus(busRepository);
+        deleteBus = new DeleteBus(busRepository);
     }
 
-    @Test void
-    get_a_bus_by_id() {
-        Bus expected = BusBuilder.aBus()
+    @Test
+    void
+    delete_a_bus_by_id() {
+
+        Bus currentBus = Bus.BusBuilder.aBus()
                 .withId(1L)
                 .withPlateNumber("8711HHL")
                 .withBusType(BusType.REGULAR)
@@ -42,21 +44,19 @@ class GetBusShould {
                 .withCapacity(50)
                 .build();
 
-        given(busRepository.findByBusId(1L)).willReturn(Optional.of(expected));
+        BDDMockito.given(busRepository.findByBusId(1L)).willReturn(Optional.of(currentBus));
 
-        Bus retrievedBus = getBus.getBusById(1L);
+        deleteBus.deleteBusById(1L);
 
-        assertThat(retrievedBus)
-                .usingRecursiveComparison()
-                .isEqualTo(expected);
+        BDDMockito.verify(busRepository).deleteBusById(1L);
     }
 
     @Test void
-    fail_when_bus_not_found_by_given_id() {
+    fail_when_delete_a_non_existing_bus_by_id() {
 
         given(busRepository.findByBusId(1L)).willReturn(Optional.empty());
 
-        Throwable throwable = catchThrowable(() -> getBus.getBusById(1L));
+        Throwable throwable = catchThrowable(() -> deleteBus.deleteBusById(1L));
 
         assertThat(throwable)
                 .isInstanceOf(BusNotFoundException.class)

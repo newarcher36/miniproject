@@ -4,9 +4,11 @@ import java.util.Optional;
 
 public interface BusRepository {
 
-    Bus save(Bus bus);
+    void save(Bus bus);
 
     boolean existsByPlateNumber(String plateNumber);
 
     Optional<Bus> findByBusId(Long busId);
+
+    void deleteBusById(long busId);
 }
