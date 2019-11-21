@@ -1,12 +1,14 @@
 package com.flixbus.miniproject.api.dto;
 
+import java.util.Objects;
+
 public class DepotWriteDto {
 
-    private long id;
+    private Long id;
     private String name;
     private int busCapacity;
 
-    public DepotWriteDto(long id, String name, int busCapacity) {
+    public DepotWriteDto(Long id, String name, int busCapacity) {
         this.id = id;
         this.name = name;
         this.busCapacity = busCapacity;
@@ -24,9 +26,24 @@ public class DepotWriteDto {
         return busCapacity;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        DepotWriteDto that = (DepotWriteDto) o;
+        return id == that.id &&
+                busCapacity == that.busCapacity &&
+                name.equals(that.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, busCapacity);
+    }
+
     public static final class DepotWriteDtoBuilder {
 
-        private long id;
+        private Long id;
         private String name;
         private int busCapacity;
 
@@ -37,7 +54,7 @@ public class DepotWriteDto {
             return new DepotWriteDtoBuilder();
         }
 
-        public DepotWriteDtoBuilder withId(long id) {
+        public DepotWriteDtoBuilder withId(Long id) {
             this.id = id;
             return this;
         }

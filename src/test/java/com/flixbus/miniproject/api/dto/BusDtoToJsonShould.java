@@ -14,7 +14,7 @@ class BusDtoToJsonShould {
     @Test void
     serialize_bus_dto_to_json() throws JsonProcessingException {
         String result = objectMapper.writeValueAsString(aBusDto());
-        String expected = "{\"id\":1,\"plateNumber\":\"8711HHL\",\"busType\":\"REGULAR\",\"busColor\":\"GREEN\",\"capacity\":50}";
+        String expected = "{\"id\":1,\"plateNumber\":\"8711HHL\",\"busType\":\"REGULAR\",\"busColor\":\"GREEN\",\"passengerCapacity\":50}";
 
         Assertions.assertThat(result)
                 .isEqualTo(expected);

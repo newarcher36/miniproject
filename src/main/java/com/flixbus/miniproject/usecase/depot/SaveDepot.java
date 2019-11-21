@@ -1,4 +1,4 @@
-package com.flixbus.miniproject.usecase;
+package com.flixbus.miniproject.usecase.depot;
 
 import com.flixbus.miniproject.domain.depot.Depot;
 import com.flixbus.miniproject.domain.depot.DepotRepository;

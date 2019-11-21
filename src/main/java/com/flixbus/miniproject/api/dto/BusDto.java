@@ -2,23 +2,21 @@ package com.flixbus.miniproject.api.dto;
 
 import com.flixbus.miniproject.domain.bus.BusType;
 import com.flixbus.miniproject.domain.bus.Color;
-import lombok.EqualsAndHashCode;
 
-@EqualsAndHashCode
 public class BusDto {
 
     private final long id;
     private final String plateNumber;
     private final BusType busType;
     private final Color busColor;
-    private final int capacity;
+    private final int passengerCapacity;
 
-    public BusDto(Long id, String plateNumber, BusType busType, Color busColor, int capacity) {
+    public BusDto(Long id, String plateNumber, BusType busType, Color busColor, int passengerCapacity) {
         this.id = id;
         this.plateNumber = plateNumber;
         this.busType = busType;
         this.busColor = busColor;
-        this.capacity = capacity;
+        this.passengerCapacity = passengerCapacity;
     }
 
     public Long getId() {
@@ -37,8 +35,8 @@ public class BusDto {
         return busColor;
     }
 
-    public int getCapacity() {
-        return capacity;
+    public int getPassengerCapacity() {
+        return passengerCapacity;
     }
 
     public static final class BusDtoBuilder {

@@ -2,7 +2,6 @@ package com.flixbus.miniproject.usecase.depot;
 
 import com.flixbus.miniproject.domain.depot.Depot;
 import com.flixbus.miniproject.domain.depot.DepotRepository;
-import com.flixbus.miniproject.usecase.SaveDepot;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

@@ -3,17 +3,17 @@ package com.flixbus.miniproject.usecase.depot;
 import com.flixbus.miniproject.domain.depot.Depot;
 import com.flixbus.miniproject.domain.depot.DepotRepository;
 import com.flixbus.miniproject.domain.exception.DepotNotFoundException;
-import com.flixbus.miniproject.usecase.EditDepot;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.Optional;
+
 import static java.util.Collections.emptySet;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
-import static org.mockito.ArgumentMatchers.refEq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.verify;
 
@@ -31,19 +31,21 @@ class EditDepotShould {
     }
 
     @Test
-    void edit_a_bus() {
+    void edit_a_depot() {
 
-        given(depotRepository.existsById(1L)).willReturn(true);
+        Depot depot = aDepot();
 
-        editDepot.execute(aDepot());
+        given(depotRepository.findDepotById(1L)).willReturn(Optional.of(aDepot()));
 
-        verify(depotRepository).save(refEq(aDepot()));
+        editDepot.execute(depot);
+
+        verify(depotRepository).save(depot);
     }
 
     @Test void
-    fail_when_edit_an_unexisting_depot() {
+    fail_when_edit_a_non_existing_depot() {
 
-        given(depotRepository.existsById(1L)).willReturn(false);
+        given(depotRepository.findDepotById(1L)).willReturn(Optional.empty());
 
         Throwable throwable = catchThrowable(() -> editDepot.execute(aDepot()));
 

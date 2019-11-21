@@ -1,4 +1,4 @@
-package com.flixbus.miniproject.usecase;
+package com.flixbus.miniproject.usecase.bus;
 
 import com.flixbus.miniproject.domain.bus.BusRepository;
 import com.flixbus.miniproject.domain.exception.BusNotFoundException;

@@ -10,6 +10,8 @@ import com.flixbus.miniproject.infrastructure.persistence.repository.bus.BusJpaR
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -18,7 +20,6 @@ import java.util.Optional;
 import static com.flixbus.miniproject.domain.bus.Bus.BusBuilder;
 import static com.flixbus.miniproject.infrastructure.persistence.entity.BusEntity.BusEntityBuilder;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.refEq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 
@@ -34,6 +35,9 @@ class BusHibernateJpaRepositoryShould {
     @Mock
     private BusEntityToBusMapper mapper;
 
+    @Captor
+    private ArgumentCaptor<BusEntity> captor;
+
     @BeforeEach
     void init() {
         busHibernateJpaRepository = new BusHibernateJpaRepository(busJpaRepository, mapper);
@@ -46,7 +50,35 @@ class BusHibernateJpaRepositoryShould {
 
         busHibernateJpaRepository.save(aBus());
 
-        verify(busJpaRepository).save(refEq(busEntity));
+        verify(busJpaRepository).save(captor.capture());
+
+        assertThat(captor.getValue())
+                .isEqualToComparingFieldByField(busEntity);
+    }
+
+    @Test void
+    find_a_bus_by_id() {
+
+        BusEntity busEntity = aBusEntity();
+
+        given(busJpaRepository.findById(1L)).willReturn(Optional.of(busEntity));
+        given(mapper.map(busEntity)).willReturn(aBus());
+
+        Optional<Bus> optionalBus = busHibernateJpaRepository.findByBusId(1L);
+
+        assertThat(optionalBus)
+                .isPresent();
+
+        assertThat(optionalBus.get())
+                .isEqualToComparingFieldByField(busEntity);
+    }
+
+    @Test void
+    delete_a_bus_by_id() {
+
+        busHibernateJpaRepository.deleteBusById(1L);
+
+        verify(busJpaRepository).deleteById(1L);
     }
 
     @Test void
@@ -67,32 +99,6 @@ class BusHibernateJpaRepositoryShould {
         boolean exists = busHibernateJpaRepository.existsByPlateNumber(PLATE_NUMBER);
 
         assertThat(exists).isFalse();
-    }
-
-    @Test void
-    find_a_bus_by_id() {
-
-        BusEntity busEntity = aBusEntity();
-
-        given(busJpaRepository.findById(1L)).willReturn(Optional.of(busEntity));
-        given(mapper.map(busEntity)).willReturn(aBus());
-
-        Optional<Bus> optionalBus = busHibernateJpaRepository.findByBusId(1L);
-
-        assertThat(optionalBus)
-                .isPresent();
-
-        assertThat(optionalBus.get())
-                .usingRecursiveComparison()
-                .isEqualTo(busEntity);
-    }
-
-    @Test void
-    delete_a_bus_by_id() {
-
-        busHibernateJpaRepository.deleteBusById(1L);
-
-        verify(busJpaRepository).deleteById(1L);
     }
 
     private BusEntity aBusEntity() {

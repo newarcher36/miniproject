@@ -5,11 +5,10 @@ import com.flixbus.miniproject.api.mapper.BusDtoToBusMapper;
 import com.flixbus.miniproject.domain.bus.Bus;
 import com.flixbus.miniproject.domain.bus.BusType;
 import com.flixbus.miniproject.domain.bus.Color;
-import com.flixbus.miniproject.usecase.DeleteBus;
-import com.flixbus.miniproject.usecase.EditBus;
-import com.flixbus.miniproject.usecase.GetBus;
-import com.flixbus.miniproject.usecase.SaveBus;
-import org.assertj.core.api.Assertions;
+import com.flixbus.miniproject.usecase.bus.DeleteBus;
+import com.flixbus.miniproject.usecase.bus.EditBus;
+import com.flixbus.miniproject.usecase.bus.GetBus;
+import com.flixbus.miniproject.usecase.bus.SaveBus;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -61,13 +60,7 @@ class BusControllerShould {
 
         busController.createBus(busDto);
 
-        verify(saveBus).execute(captor.capture());
-
-        Bus actual = captor.getValue();
-
-        Assertions.assertThat(actual)
-                .usingRecursiveComparison()
-                .isEqualTo(busDto);
+        verify(saveBus).execute(bus);
     }
 
     @Test void
@@ -80,13 +73,7 @@ class BusControllerShould {
 
         busController.editBus(busDto);
 
-        verify(editBus).execute(captor.capture());
-
-        Bus actual = captor.getValue();
-
-        Assertions.assertThat(actual)
-                .usingRecursiveComparison()
-                .isEqualTo(busDto);
+        verify(editBus).execute(bus);
     }
 
     @Test void
@@ -97,8 +84,7 @@ class BusControllerShould {
         BusDto retrievedBus = busController.getBusById(1L);
 
         assertThat(retrievedBus)
-                .usingRecursiveComparison()
-                .isEqualTo(aBus());
+                .isEqualToComparingFieldByField(aBus());
     }
 
     @Test void

@@ -16,7 +16,7 @@ public class BusDtoToBusMapper {
                 .withPlateNumber(busDto.getPlateNumber())
                 .withBusType(busDto.getBusType())
                 .withBusColor(busDto.getBusColor())
-                .withCapacity(busDto.getCapacity())
+                .withCapacity(busDto.getPassengerCapacity())
                 .build();
     }
 }

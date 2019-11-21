@@ -1,17 +1,17 @@
-package com.flixbus.miniproject.domain.depot;
+package com.flixbus.miniproject.api.dto;
 
 import com.flixbus.miniproject.domain.bus.Bus;
 
 import java.util.Set;
 
-public class Depot {
+public class DepotReadDTO {
 
-    private Long id;
+    private long id;
     private String name;
     private int busCapacity;
     private Set<Bus> buses;
 
-    public Depot(Long id, String name, int busCapacity, Set<Bus> buses) {
+    public DepotReadDTO(long id, String name, int busCapacity, Set<Bus> buses) {
         this.id = id;
         this.name = name;
         this.busCapacity = busCapacity;
@@ -34,42 +34,42 @@ public class Depot {
         return buses;
     }
 
-    public static final class DepotBuilder {
 
-        private Long id;
+    public static final class DepotReadDTOBuilder {
+        private long id;
         private String name;
         private int busCapacity;
         private Set<Bus> buses;
 
-        private DepotBuilder() {
+        private DepotReadDTOBuilder() {
         }
 
-        public static DepotBuilder aDepot() {
-            return new DepotBuilder();
+        public static DepotReadDTOBuilder aDepotReadDTO() {
+            return new DepotReadDTOBuilder();
         }
 
-        public DepotBuilder withId(Long id) {
+        public DepotReadDTOBuilder withId(long id) {
             this.id = id;
             return this;
         }
 
-        public DepotBuilder withName(String name) {
+        public DepotReadDTOBuilder withName(String name) {
             this.name = name;
             return this;
         }
 
-        public DepotBuilder withBusCapacity(int busCapacity) {
+        public DepotReadDTOBuilder withBusCapacity(int busCapacity) {
             this.busCapacity = busCapacity;
             return this;
         }
 
-        public DepotBuilder withBuses(Set<Bus> buses) {
+        public DepotReadDTOBuilder withBuses(Set<Bus> buses) {
             this.buses = buses;
             return this;
         }
 
-        public Depot build() {
-            return new Depot(id, name, busCapacity, buses);
+        public DepotReadDTO build() {
+            return new DepotReadDTO(id, name, busCapacity, buses);
         }
     }
 }

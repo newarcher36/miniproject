@@ -1,6 +1,9 @@
 package com.flixbus.miniproject.infrastructure.persistence;
 
+import com.flixbus.miniproject.domain.bus.BusType;
+import com.flixbus.miniproject.domain.bus.Color;
 import com.flixbus.miniproject.domain.depot.Depot;
+import com.flixbus.miniproject.infrastructure.persistence.entity.BusEntity;
 import com.flixbus.miniproject.infrastructure.persistence.entity.DepotEntity;
 import com.flixbus.miniproject.infrastructure.persistence.mapper.BusEntityToBusMapper;
 import com.flixbus.miniproject.infrastructure.persistence.repository.depot.DepotHibernateJpaRepository;
@@ -8,10 +11,16 @@ import com.flixbus.miniproject.infrastructure.persistence.repository.depot.Depot
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.BDDMockito;
+import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static org.mockito.ArgumentMatchers.refEq;
+import java.util.Optional;
+import java.util.Set;
+
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
@@ -25,6 +34,9 @@ class DepotHibernateJpaRepositoryShould {
     @Mock
     private BusEntityToBusMapper mapper;
 
+    @Captor
+    private ArgumentCaptor<DepotEntity> captor;
+
     @BeforeEach
     void init() {
         depotHibernateJpaRepository = new DepotHibernateJpaRepository(depotJpaRepository, mapper);
@@ -33,9 +45,36 @@ class DepotHibernateJpaRepositoryShould {
     @Test void
     save_a_depot() {
 
+        Depot depot = aDepot();
+
         depotHibernateJpaRepository.save(aDepot());
 
-        verify(depotJpaRepository).save(refEq(aDepotEntity()));
+        verify(depotJpaRepository).save(captor.capture());
+
+        DepotEntity depotEntity = captor.getValue();
+
+        assertThat(depot)
+                .isEqualToComparingFieldByField(depotEntity);
+
+    }
+
+    @Test void
+    delete_depot_by_id() {
+
+        depotHibernateJpaRepository.deleteDepotById(1L);
+
+        verify(depotJpaRepository).deleteById(1L);
+    }
+
+    @Test void
+    find_depot_by_id() {
+
+        BDDMockito.given(depotJpaRepository.findById(1L)).willReturn(Optional.of(aDepotEntity()));
+
+        Optional<Depot> optionalDepot = depotHibernateJpaRepository.findDepotById(1L);
+
+        assertThat(optionalDepot)
+                .isPresent();
     }
 
     private Depot aDepot() {
@@ -51,26 +90,17 @@ class DepotHibernateJpaRepositoryShould {
                 .withId(1L)
                 .withName("Bavaria")
                 .withBusCapacity(12)
+                .withBuses(Set.of(aBusEntity()))
                 .build();
     }
-//
-//    private Bus aBus() {
-//        return Bus.BusBuilder.aBus()
-//                .withId(1L)
-//                .withPlateNumber("8711HHL")
-//                .withBusType(BusType.REGULAR)
-//                .withBusColor(Color.GREEN)
-//                .withCapacity(50)
-//                .build();
-//    }
-//
-//    private BusEntity aBusEntity() {
-//        return BusEntity.BusEntityBuilder.aBusEntity()
-//                .withId(1L)
-//                .withPlateNumber("8711HHL")
-//                .withBusType(BusType.REGULAR)
-//                .withBusColor(Color.GREEN)
-//                .withCapacity(50)
-//                .build();
-//    }
+
+    private BusEntity aBusEntity() {
+        return BusEntity.BusEntityBuilder.aBusEntity()
+                .withId(1L)
+                .withPlateNumber("1908IKH")
+                .withBusType(BusType.REGULAR)
+                .withBusColor(Color.GREEN)
+                .withCapacity(50)
+                .build();
+    }
 }

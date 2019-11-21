@@ -1,18 +1,12 @@
 package com.flixbus.miniproject.infrastructure.persistence.entity;
 
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import java.util.Set;
 
 @Entity(name = "depot")
-public class DepotEntity {
+public class DepotEntity extends AbstractEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private long id;
     private String name;
     private int busCapacity;
 
@@ -21,14 +15,14 @@ public class DepotEntity {
 
     public DepotEntity() {}
 
-    public DepotEntity(long id, String name, int busCapacity, Set<BusEntity> buses) {
+    public DepotEntity(Long id, String name, int busCapacity, Set<BusEntity> buses) {
         this.id = id;
         this.name = name;
         this.busCapacity = busCapacity;
         this.buses = buses;
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
@@ -45,7 +39,7 @@ public class DepotEntity {
     }
 
     public static final class DepotEntityBuilder {
-        private long id;
+        private Long id;
         private String name;
         private int busCapacity;
         private Set<BusEntity> buses;
@@ -57,7 +51,7 @@ public class DepotEntity {
             return new DepotEntityBuilder();
         }
 
-        public DepotEntityBuilder withId(long id) {
+        public DepotEntityBuilder withId(Long id) {
             this.id = id;
             return this;
         }
