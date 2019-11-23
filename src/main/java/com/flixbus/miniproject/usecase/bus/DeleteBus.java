@@ -14,7 +14,8 @@ public class DeleteBus {
     }
 
     public void deleteBusById(long busId) {
-        busRepository.findByBusId(1L).orElseThrow(() -> new BusNotFoundException("Bus not found with id: 1"));
+        busRepository.findBusById(1L)
+                .orElseThrow(() -> new BusNotFoundException("Bus not found with id: " + busId));
         busRepository.deleteBusById(busId);
     }
 }

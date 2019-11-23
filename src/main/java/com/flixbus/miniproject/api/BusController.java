@@ -36,19 +36,19 @@ public class BusController {
         this.mapper = mapper;
     }
 
-    @PostMapping(produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
+    @PostMapping(consumes = APPLICATION_JSON_VALUE)
     public void createBus(@RequestBody BusDto busDto) {
         Bus bus = mapper.map(busDto);
         saveBus.execute(bus);
     }
 
-    @PutMapping(produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
+    @PutMapping(consumes = APPLICATION_JSON_VALUE)
     public void editBus(@RequestBody BusDto busDto) {
         Bus bus = mapper.map(busDto);
         editBus.execute(bus);
     }
 
-    @GetMapping(value = "{busId}", produces = APPLICATION_JSON_VALUE)
+    @GetMapping(value = "{busId}")
     public BusDto getBusById(@PathVariable long busId) {
         return mapBusToBusDto(getBus.getBusById(busId));
     }

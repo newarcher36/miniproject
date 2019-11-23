@@ -1,24 +1,29 @@
 package com.flixbus.miniproject.domain.depot;
 
 import com.flixbus.miniproject.domain.bus.Bus;
+import com.flixbus.miniproject.domain.exception.DepotBusyException;
 
+import java.util.HashSet;
 import java.util.Set;
+
+import static java.util.Objects.isNull;
 
 public class Depot {
 
-    private Long id;
-    private String name;
-    private int busCapacity;
+    private final Long id;
+    private final String name;
+    private final int capacity;
     private Set<Bus> buses;
 
-    public Depot(Long id, String name, int busCapacity, Set<Bus> buses) {
+    public Depot(Long id, String name, int capacity, Set<Bus> buses) {
         this.id = id;
         this.name = name;
-        this.busCapacity = busCapacity;
+        this.capacity = capacity;
         this.buses = buses;
+        validate();
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
@@ -26,19 +31,49 @@ public class Depot {
         return name;
     }
 
-    public int getBusCapacity() {
-        return busCapacity;
+    public int getCapacity() {
+        return capacity;
     }
 
     public Set<Bus> getBuses() {
-        return buses;
+        return Set.copyOf(buses);
+    }
+
+    public void add(Bus bus) {
+        if (capacity == buses.size()) {
+            throw new DepotBusyException(String.format("Cannot park more buses. Depot with id %d is busy", id));
+        }
+        this.buses.add(bus);
+    }
+
+    public void remove(Bus bus) {
+        buses.remove(bus);
+    }
+
+    private void validate() {
+
+        if (isNull(name) || name.trim().isEmpty()) {
+            throwException("Depot name is required");
+        }
+
+        if (capacity <= 0) {
+            throwException("Depot capacity is required");
+        }
+
+        if(isNull(buses)) {
+            buses = new HashSet<>();
+        }
+    }
+
+    private void throwException(String message) {
+        throw new IllegalArgumentException(message);
     }
 
     public static final class DepotBuilder {
 
         private Long id;
         private String name;
-        private int busCapacity;
+        private int capacity;
         private Set<Bus> buses;
 
         private DepotBuilder() {
@@ -58,8 +93,8 @@ public class Depot {
             return this;
         }
 
-        public DepotBuilder withBusCapacity(int busCapacity) {
-            this.busCapacity = busCapacity;
+        public DepotBuilder withCapacity(int busCapacity) {
+            this.capacity = busCapacity;
             return this;
         }
 
@@ -69,7 +104,7 @@ public class Depot {
         }
 
         public Depot build() {
-            return new Depot(id, name, busCapacity, buses);
+            return new Depot(id, name, capacity, buses);
         }
     }
 }

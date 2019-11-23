@@ -2,9 +2,11 @@ package com.flixbus.miniproject.api;
 
 import com.flixbus.miniproject.api.dto.DepotWriteDto;
 import com.flixbus.miniproject.domain.depot.Depot;
-import com.flixbus.miniproject.usecase.depot.EditDepot;
-import com.flixbus.miniproject.usecase.depot.SaveDepot;
+import com.flixbus.miniproject.usecase.depot.RemoveBus;
 import com.flixbus.miniproject.usecase.depot.DeleteDepot;
+import com.flixbus.miniproject.usecase.depot.EditDepot;
+import com.flixbus.miniproject.usecase.depot.ParkBus;
+import com.flixbus.miniproject.usecase.depot.SaveDepot;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -30,12 +32,18 @@ class DepotControllerShould {
     @Mock
     private DeleteDepot deleteDepot;
 
+    @Mock
+    private ParkBus parkBus;
+
+    @Mock
+    private RemoveBus removeBus;
+
     @Captor
     private ArgumentCaptor<Depot> captor;
 
     @BeforeEach
     void init() {
-        depotController = new DepotController(saveDepot, editDepot, deleteDepot);
+        depotController = new DepotController(saveDepot, editDepot, deleteDepot, parkBus, removeBus);
     }
 
     @Test void
@@ -76,6 +84,28 @@ class DepotControllerShould {
         verify(deleteDepot).execute(1L);
     }
 
+    @Test void
+    park_buses_to_a_given_depot() {
+
+        long depotId = 1L;
+        long busId = 1L;
+
+        depotController.parkBusesToDepot(depotId, busId);
+
+        verify(parkBus).execute(depotId, busId);
+    }
+
+    @Test void
+    remove_bus_from_depot() {
+
+        long depotId = 1L;
+        long busId = 1L;
+
+        depotController.removeBusesToDepot(depotId, busId);
+
+        verify(removeBus).execute(depotId, busId);
+    }
+
     private DepotWriteDto aDepotWritetDto() {
         return DepotWriteDto.DepotWriteDtoBuilder.aDepotWriteDto()
                 .withId(1L)
@@ -88,7 +118,7 @@ class DepotControllerShould {
         return Depot.DepotBuilder.aDepot()
                 .withId(1L)
                 .withName("Bavaria")
-                .withBusCapacity(12)
+                .withCapacity(12)
                 .build();
     }
 }

@@ -1,7 +1,8 @@
 package com.flixbus.miniproject.api;
 
+import com.flixbus.miniproject.domain.exception.BusAlreadyParkedExcepion;
 import com.flixbus.miniproject.domain.exception.BusNotFoundException;
-import com.flixbus.miniproject.domain.exception.DepotNotEmptyException;
+import com.flixbus.miniproject.domain.exception.DepotBusyException;
 import com.flixbus.miniproject.domain.exception.DepotNotFoundException;
 import com.flixbus.miniproject.domain.exception.DuplicatePlateNumberException;
 import org.slf4j.Logger;
@@ -47,8 +48,15 @@ public class ErrorController {
 	}
 
 	@ResponseBody
-	@ExceptionHandler(DepotNotEmptyException.class)
-	public ResponseEntity<?> handleDepotNotEmptyException(DepotNotEmptyException ex) {
+	@ExceptionHandler(DepotBusyException.class)
+	public ResponseEntity<?> handleDepotNotEmptyException(DepotBusyException ex) {
+		logException(ex);
+		return buildResponseEntity(HttpStatus.CONFLICT,ex.getMessage());
+	}
+
+	@ResponseBody
+	@ExceptionHandler(BusAlreadyParkedExcepion.class)
+	public ResponseEntity<?> handleBusAlreadyParkedExcepion(BusAlreadyParkedExcepion ex) {
 		logException(ex);
 		return buildResponseEntity(HttpStatus.CONFLICT,ex.getMessage());
 	}

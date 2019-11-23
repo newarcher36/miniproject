@@ -1,55 +1,77 @@
 package com.flixbus.miniproject.usecase.depot;
 
 import com.flixbus.miniproject.domain.bus.Bus;
+import com.flixbus.miniproject.domain.bus.BusRepository;
 import com.flixbus.miniproject.domain.bus.BusType;
 import com.flixbus.miniproject.domain.bus.Color;
 import com.flixbus.miniproject.domain.depot.Depot;
 import com.flixbus.miniproject.domain.depot.DepotRepository;
-import com.flixbus.miniproject.domain.exception.DepotBusyException;
+import com.flixbus.miniproject.domain.exception.BusNotFoundException;
 import com.flixbus.miniproject.domain.exception.DepotNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.Collections;
+import java.util.HashSet;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.BDDMockito.verify;
+import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
-class DeleteDepotShould {
+class RemoveBusShould {
 
-    private DeleteDepot deleteDepot;
+    private RemoveBus removeBus;
 
     @Mock
     private DepotRepository depotRepository;
 
+    @Mock
+    private BusRepository busRepository;
+
+    @Captor
+    private ArgumentCaptor<Depot> captor;
+
     @BeforeEach
     void init() {
-        deleteDepot = new DeleteDepot(depotRepository);
+        removeBus = new RemoveBus(depotRepository, busRepository);
     }
 
     @Test void
-    delete_a_depot_by_id() {
+    remove_bus_from_a_given_depot() {
 
-        given(depotRepository.findDepotById(1L)).willReturn(Optional.of(anEmptyDepot()));
+        long depotId = 1L;
+        long busId = 1L;
+        Bus busToRemove = aBus();
 
-        deleteDepot.execute(1L);
+        given(depotRepository.findDepotById(depotId)).willReturn(Optional.of(aDepot()));
+        given(busRepository.findBusById(busId)).willReturn(Optional.of(busToRemove));
 
-        verify(depotRepository).deleteDepotById(1L);
+        removeBus.execute(depotId, busId);
+
+        verify(depotRepository).save(captor.capture());
+
+        Depot depot = captor.getValue();
+
+        assertThat(depot.getBuses())
+                .doesNotContain(busToRemove);
     }
 
     @Test void
-    fail_when_delete_a_non_existing_depot() {
+    fail_when_remove_a_bus_from_a_non_existing_depot() {
+
+        long depotId = 1L;
+        long busId = 1L;
 
         given(depotRepository.findDepotById(1L)).willReturn(Optional.empty());
 
-        Throwable throwable = catchThrowable(() -> deleteDepot.execute(1L));
+        Throwable throwable = catchThrowable(() -> removeBus.execute(depotId, busId));
 
         assertThat(throwable)
                 .isInstanceOf(DepotNotFoundException.class)
@@ -57,32 +79,27 @@ class DeleteDepotShould {
     }
 
     @Test void
-    fail_when_delete_a_depot_with_buses() {
+    fail_when_remove_a_non_existing_bus() {
+
+        long depotId = 1L;
+        long busId = 1L;
 
         given(depotRepository.findDepotById(1L)).willReturn(Optional.of(aDepot()));
+        given(busRepository.findBusById(busId)).willReturn(Optional.empty());
 
-        Throwable throwable = catchThrowable(() -> deleteDepot.execute(1L));
+        Throwable throwable = catchThrowable(() -> removeBus.execute(depotId, busId));
 
         assertThat(throwable)
-                .isInstanceOf(DepotBusyException.class)
-                .hasMessage("Cannot remove depot with id 1, there are 1 buses parked already");
+                .isInstanceOf(BusNotFoundException.class)
+                .hasMessage("Bus not found with id: 1");
     }
 
     private Depot aDepot() {
         return Depot.DepotBuilder.aDepot()
                 .withId(1L)
                 .withName("Bavaria")
-                .withCapacity(12)
-                .withBuses(Collections.singleton(aBus()))
-                .build();
-    }
-
-    private Depot anEmptyDepot() {
-        return Depot.DepotBuilder.aDepot()
-                .withId(1L)
-                .withName("Bavaria")
-                .withCapacity(12)
-                .withBuses(Collections.emptySet())
+                .withCapacity(2)
+                .withBuses(new HashSet<>(){{add(aBus());}})
                 .build();
     }
 

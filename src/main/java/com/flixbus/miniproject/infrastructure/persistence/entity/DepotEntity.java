@@ -8,17 +8,17 @@ import java.util.Set;
 public class DepotEntity extends AbstractEntity {
 
     private String name;
-    private int busCapacity;
+    private int capacity;
 
     @OneToMany
     private Set<BusEntity> buses;
 
-    public DepotEntity() {}
+    public DepotEntity(){}
 
-    public DepotEntity(Long id, String name, int busCapacity, Set<BusEntity> buses) {
+    public DepotEntity(Long id, String name, int capacity, Set<BusEntity> buses) {
         this.id = id;
         this.name = name;
-        this.busCapacity = busCapacity;
+        this.capacity = capacity;
         this.buses = buses;
     }
 
@@ -30,8 +30,8 @@ public class DepotEntity extends AbstractEntity {
         return name;
     }
 
-    public int getBusCapacity() {
-        return busCapacity;
+    public int getCapacity() {
+        return capacity;
     }
 
     public Set<BusEntity> getBuses() {
@@ -61,7 +61,7 @@ public class DepotEntity extends AbstractEntity {
             return this;
         }
 
-        public DepotEntityBuilder withBusCapacity(int busCapacity) {
+        public DepotEntityBuilder withCapacity(int busCapacity) {
             this.busCapacity = busCapacity;
             return this;
         }

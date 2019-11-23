@@ -25,7 +25,7 @@ class EditBusIT extends AbstractIT {
     @Test void
     edit_an_existing_bus() {
 
-        when(busRepository.findByBusId(1L)).thenReturn(aBus());
+        when(busRepository.findBusById(1L)).thenReturn(aBus());
         when(busRepository.existsByPlateNumber("8711HHL")).thenReturn(false);
 
         given()
@@ -56,7 +56,7 @@ class EditBusIT extends AbstractIT {
     @Test void
     fail_when_edit_a_bus_with_duplicated_plate_number() {
 
-        when(busRepository.findByBusId(1L)).thenReturn(aBus());
+        when(busRepository.findBusById(1L)).thenReturn(aBus());
         when(busRepository.existsByPlateNumber("5721HHL")).thenReturn(true);
 
         given()

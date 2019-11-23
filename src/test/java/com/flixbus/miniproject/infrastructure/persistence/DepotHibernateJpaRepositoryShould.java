@@ -6,6 +6,7 @@ import com.flixbus.miniproject.domain.depot.Depot;
 import com.flixbus.miniproject.infrastructure.persistence.entity.BusEntity;
 import com.flixbus.miniproject.infrastructure.persistence.entity.DepotEntity;
 import com.flixbus.miniproject.infrastructure.persistence.mapper.BusEntityToBusMapper;
+import com.flixbus.miniproject.infrastructure.persistence.mapper.BusToBusEntityMapper;
 import com.flixbus.miniproject.infrastructure.persistence.repository.depot.DepotHibernateJpaRepository;
 import com.flixbus.miniproject.infrastructure.persistence.repository.depot.DepotJpaRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -32,14 +33,17 @@ class DepotHibernateJpaRepositoryShould {
     private DepotJpaRepository depotJpaRepository;
 
     @Mock
-    private BusEntityToBusMapper mapper;
+    private BusEntityToBusMapper busEntityToBusMapper;
+
+    @Mock
+    private BusToBusEntityMapper busToBusEntityMapper;
 
     @Captor
     private ArgumentCaptor<DepotEntity> captor;
 
     @BeforeEach
     void init() {
-        depotHibernateJpaRepository = new DepotHibernateJpaRepository(depotJpaRepository, mapper);
+        depotHibernateJpaRepository = new DepotHibernateJpaRepository(depotJpaRepository, busEntityToBusMapper, busToBusEntityMapper);
     }
 
     @Test void
@@ -53,8 +57,8 @@ class DepotHibernateJpaRepositoryShould {
 
         DepotEntity depotEntity = captor.getValue();
 
-        assertThat(depot)
-                .isEqualToComparingFieldByField(depotEntity);
+        assertThat(depotEntity)
+                .isEqualToComparingFieldByField(depot);
 
     }
 
@@ -81,7 +85,7 @@ class DepotHibernateJpaRepositoryShould {
         return Depot.DepotBuilder.aDepot()
                 .withId(1L)
                 .withName("Bavaria")
-                .withBusCapacity(12)
+                .withCapacity(12)
                 .build();
     }
 
@@ -89,7 +93,7 @@ class DepotHibernateJpaRepositoryShould {
         return DepotEntity.DepotEntityBuilder.aDepotEntity()
                 .withId(1L)
                 .withName("Bavaria")
-                .withBusCapacity(12)
+                .withCapacity(12)
                 .withBuses(Set.of(aBusEntity()))
                 .build();
     }

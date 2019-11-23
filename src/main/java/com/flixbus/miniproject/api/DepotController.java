@@ -2,9 +2,11 @@ package com.flixbus.miniproject.api;
 
 import com.flixbus.miniproject.api.dto.DepotWriteDto;
 import com.flixbus.miniproject.domain.depot.Depot;
-import com.flixbus.miniproject.usecase.depot.EditDepot;
-import com.flixbus.miniproject.usecase.depot.SaveDepot;
+import com.flixbus.miniproject.usecase.depot.RemoveBus;
 import com.flixbus.miniproject.usecase.depot.DeleteDepot;
+import com.flixbus.miniproject.usecase.depot.EditDepot;
+import com.flixbus.miniproject.usecase.depot.ParkBus;
+import com.flixbus.miniproject.usecase.depot.SaveDepot;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -23,11 +25,15 @@ public class DepotController {
     private final SaveDepot saveDepot;
     private final EditDepot editDepot;
     private final DeleteDepot deleteDepot;
+    private final ParkBus parkBus;
+    private final RemoveBus removeBus;
 
-    public DepotController(SaveDepot saveDepot, EditDepot editDepot, DeleteDepot deleteDepot) {
+    public DepotController(SaveDepot saveDepot, EditDepot editDepot, DeleteDepot deleteDepot, ParkBus parkBus, RemoveBus removeBus) {
         this.saveDepot = saveDepot;
         this.editDepot = editDepot;
         this.deleteDepot = deleteDepot;
+        this.parkBus = parkBus;
+        this.removeBus = removeBus;
     }
 
     @PostMapping(produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
@@ -43,15 +49,26 @@ public class DepotController {
     }
 
     @DeleteMapping(value = "{depotId}")
-    public void deleteDepotById(@PathVariable long depotId) {
+    public void deleteDepotById(@PathVariable Long depotId) {
         deleteDepot.execute(depotId);
+    }
+
+    @PostMapping(value = "/{depotId}/buses/{busId}")
+    public void parkBusesToDepot(@PathVariable Long depotId, @PathVariable Long busId) {
+        parkBus.execute(depotId, busId);
+    }
+
+
+    @DeleteMapping(value = "/{depotId}/buses/{busId}")
+    public void removeBusesToDepot(@PathVariable  Long depotId,@PathVariable Long busId) {
+        removeBus.execute(depotId, busId);
     }
 
     private Depot mapToDepot(DepotWriteDto depotWriteDto) {
         return DepotBuilder.aDepot()
                 .withId(depotWriteDto.getId())
                 .withName(depotWriteDto.getName())
-                .withBusCapacity(depotWriteDto.getBusCapacity())
+                .withCapacity(depotWriteDto.getCapacity())
                 .build();
     }
 }

@@ -59,7 +59,7 @@ class SaveBusShould {
 
         assertThat(throwable)
                 .isInstanceOf(DuplicatePlateNumberException.class)
-                .hasMessage("Another bus has already this plate number: 8711HHL");
+                .hasMessage("A bus has already the plate number 8711HHL");
     }
 
     private Bus aBus() {

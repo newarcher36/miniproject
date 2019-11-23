@@ -20,7 +20,7 @@ public class SaveBus {
         final String plateNumber = bus.getPlateNumber();
 
         if (plateNumberAlreadyExist(plateNumber)) {
-            throw new DuplicatePlateNumberException("Another bus has already this plate number: " + plateNumber);
+            throw new DuplicatePlateNumberException("A bus has already the plate number " + plateNumber);
         }
 
         busRepository.save(bus);

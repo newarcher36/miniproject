@@ -5,6 +5,7 @@ import com.flixbus.miniproject.domain.bus.BusType;
 import com.flixbus.miniproject.domain.bus.Color;
 import com.flixbus.miniproject.infrastructure.persistence.entity.BusEntity;
 import com.flixbus.miniproject.infrastructure.persistence.mapper.BusEntityToBusMapper;
+import com.flixbus.miniproject.infrastructure.persistence.mapper.BusToBusEntityMapper;
 import com.flixbus.miniproject.infrastructure.persistence.repository.bus.BusHibernateJpaRepository;
 import com.flixbus.miniproject.infrastructure.persistence.repository.bus.BusJpaRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,9 +17,11 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
+import java.util.Set;
 
 import static com.flixbus.miniproject.domain.bus.Bus.BusBuilder;
 import static com.flixbus.miniproject.infrastructure.persistence.entity.BusEntity.BusEntityBuilder;
+import static java.util.Collections.singleton;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
@@ -33,26 +36,34 @@ class BusHibernateJpaRepositoryShould {
     private BusJpaRepository busJpaRepository;
 
     @Mock
-    private BusEntityToBusMapper mapper;
+    private BusEntityToBusMapper busEntityToBusMapper;
+
+    @Mock
+    private BusToBusEntityMapper busToBusEntityMapper;
 
     @Captor
     private ArgumentCaptor<BusEntity> captor;
 
     @BeforeEach
     void init() {
-        busHibernateJpaRepository = new BusHibernateJpaRepository(busJpaRepository, mapper);
+        busHibernateJpaRepository = new BusHibernateJpaRepository(busJpaRepository, busEntityToBusMapper, busToBusEntityMapper);
     }
 
     @Test void
     save_a_bus() {
 
         BusEntity busEntity = aBusEntity();
+        Bus bus = aBus();
 
-        busHibernateJpaRepository.save(aBus());
+        given(busToBusEntityMapper.map(bus)).willReturn(aBusEntity());
+
+        busHibernateJpaRepository.save(bus);
 
         verify(busJpaRepository).save(captor.capture());
 
-        assertThat(captor.getValue())
+        BusEntity actual = captor.getValue();
+
+        assertThat(actual)
                 .isEqualToComparingFieldByField(busEntity);
     }
 
@@ -62,15 +73,30 @@ class BusHibernateJpaRepositoryShould {
         BusEntity busEntity = aBusEntity();
 
         given(busJpaRepository.findById(1L)).willReturn(Optional.of(busEntity));
-        given(mapper.map(busEntity)).willReturn(aBus());
+        given(busEntityToBusMapper.map(busEntity)).willReturn(aBus());
 
-        Optional<Bus> optionalBus = busHibernateJpaRepository.findByBusId(1L);
+        Optional<Bus> optionalBus = busHibernateJpaRepository.findBusById(1L);
 
         assertThat(optionalBus)
                 .isPresent();
 
         assertThat(optionalBus.get())
                 .isEqualToComparingFieldByField(busEntity);
+    }
+
+    @Test void
+    find_all_by_bus_id() {
+
+        Set<Long> busIds = Set.of(1L);
+        BusEntity busEntity = aBusEntity();
+
+        given(busJpaRepository.findAllById(busIds)).willReturn(singleton(busEntity));
+        given(busEntityToBusMapper.map(busEntity)).willReturn(aBus());
+
+        Set<Bus> buses = busHibernateJpaRepository.findAllById(busIds);
+
+        assertThat(buses)
+                .contains(aBus());
     }
 
     @Test void

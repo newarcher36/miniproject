@@ -24,7 +24,7 @@ class SaveBusIT extends AbstractIT {
     @Test void
     save_a_bus() {
 
-        given()
+        given().log().all()
                 .contentType(APPLICATION_JSON_VALUE)
                 .body(aBusDto())
                 .when()

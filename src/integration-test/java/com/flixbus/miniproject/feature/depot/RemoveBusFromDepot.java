@@ -10,14 +10,12 @@ import com.flixbus.miniproject.infrastructure.persistence.repository.depot.Depot
 import org.junit.jupiter.api.Test;
 
 import javax.inject.Inject;
-import java.util.Collections;
-import java.util.Set;
 
 import static io.restassured.RestAssured.given;
 import static java.net.HttpURLConnection.HTTP_OK;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
-public class ParkBuses extends AbstractIT {
+class RemoveBusFromDepot extends AbstractIT {
 
     @Inject
     private BusJpaRepository busJpaRepository;
@@ -25,27 +23,29 @@ public class ParkBuses extends AbstractIT {
     @Inject
     private DepotJpaRepository depotJpaRepository;
 
-    @Test void
-    park_buses_to_a_given_depot() {
+    @Test
+    void
+    remove_a_bus_from_a_given_depot() {
 
+        // script?
         busJpaRepository.save(aBusEntity());
-        depotJpaRepository.save(anEmptyDepotEntity());
+        depotJpaRepository.save(aDepotEntity());
 
         given()
                 .contentType(APPLICATION_JSON_VALUE)
                 .when()
-                .post("/v1/depots/{depotId}/{busIds}", 1L, aListOfBusIds())
+                .delete("/v1/depots/{depotId}/buses/{busIds}", 1L, 1L)
                 .then()
                 .statusCode(HTTP_OK)
                 .extract()
                 .statusCode();
     }
 
-    private DepotEntity anEmptyDepotEntity() {
+    private DepotEntity aDepotEntity() {
         return DepotEntity.DepotEntityBuilder.aDepotEntity()
                 .withId(1L)
                 .withName("Bavaria")
-                .withBusCapacity(12)
+                .withCapacity(12)
                 .build();
     }
 
@@ -57,9 +57,5 @@ public class ParkBuses extends AbstractIT {
                 .withBusColor(Color.GREEN)
                 .withCapacity(50)
                 .build();
-    }
-
-    private Set<Long> aListOfBusIds() {
-        return Collections.singleton(1L);
     }
 }

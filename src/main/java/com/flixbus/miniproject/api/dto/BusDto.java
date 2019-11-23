@@ -5,7 +5,7 @@ import com.flixbus.miniproject.domain.bus.Color;
 
 public class BusDto {
 
-    private final long id;
+    private final Long id;
     private final String plateNumber;
     private final BusType busType;
     private final Color busColor;

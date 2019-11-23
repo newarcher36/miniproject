@@ -43,7 +43,7 @@ class DeleteBusShould {
                 .withCapacity(50)
                 .build();
 
-        BDDMockito.given(busRepository.findByBusId(1L)).willReturn(Optional.of(currentBus));
+        BDDMockito.given(busRepository.findBusById(1L)).willReturn(Optional.of(currentBus));
 
         deleteBus.deleteBusById(1L);
 
@@ -53,7 +53,7 @@ class DeleteBusShould {
     @Test void
     fail_when_delete_a_non_existing_bus_by_id() {
 
-        given(busRepository.findByBusId(1L)).willReturn(Optional.empty());
+        given(busRepository.findBusById(1L)).willReturn(Optional.empty());
 
         Throwable throwable = catchThrowable(() -> deleteBus.deleteBusById(1L));
 

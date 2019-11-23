@@ -40,7 +40,7 @@ class EditBusShould {
         Bus currentBus = aBus();
         Bus busToEdit = aBus();
 
-        given(busRepository.findByBusId(1L)).willReturn(Optional.of(currentBus));
+        given(busRepository.findBusById(1L)).willReturn(Optional.of(currentBus));
 
         editBus.execute(busToEdit);
 
@@ -58,7 +58,7 @@ class EditBusShould {
                 .withBusColor(Color.GREEN)
                 .build();
 
-        given(busRepository.findByBusId(1L)).willReturn(Optional.of(currentBus));
+        given(busRepository.findBusById(1L)).willReturn(Optional.of(currentBus));
         given(busRepository.existsByPlateNumber("4309JHT")).willReturn(false);
 
         editBus.execute(busToEdit);
@@ -70,7 +70,7 @@ class EditBusShould {
     fail_when_bus_to_edit_not_exists() {
 
         Bus busToEdit = aBus();
-        given(busRepository.findByBusId(busToEdit.getId())).willReturn(Optional.empty());
+        given(busRepository.findBusById(busToEdit.getId())).willReturn(Optional.empty());
 
         Throwable throwable = catchThrowable(() -> editBus.execute(busToEdit));
 
@@ -91,7 +91,7 @@ class EditBusShould {
                 .withBusColor(Color.GREEN)
                 .build();
 
-        given(busRepository.findByBusId(1L)).willReturn(Optional.of(currentBus));
+        given(busRepository.findBusById(1L)).willReturn(Optional.of(currentBus));
         given(busRepository.existsByPlateNumber("4309JHT")).willReturn(true);
 
         Throwable throwable = catchThrowable(() -> editBus.execute(busToEdit));

@@ -19,7 +19,7 @@ public class EditBus {
     public void execute(Bus bus) {
 
         long busId = bus.getId();
-        Bus currentBus = busRepository.findByBusId(bus.getId())
+        Bus currentBus = busRepository.findBusById(bus.getId())
                 .orElseThrow(() -> new BusNotFoundException("Bus not found with id: " + busId));
 
         if (hasPlateNumberChanged(bus, currentBus)) {

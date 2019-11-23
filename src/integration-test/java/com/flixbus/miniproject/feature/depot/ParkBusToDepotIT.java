@@ -1,22 +1,30 @@
 package com.flixbus.miniproject.feature.depot;
 
+import com.flixbus.miniproject.domain.bus.Bus;
+import com.flixbus.miniproject.domain.bus.BusRepository;
 import com.flixbus.miniproject.domain.bus.BusType;
 import com.flixbus.miniproject.domain.bus.Color;
+import com.flixbus.miniproject.domain.depot.Depot;
+import com.flixbus.miniproject.domain.depot.DepotRepository;
 import com.flixbus.miniproject.feature.AbstractIT;
 import com.flixbus.miniproject.infrastructure.persistence.entity.BusEntity;
 import com.flixbus.miniproject.infrastructure.persistence.entity.DepotEntity;
 import com.flixbus.miniproject.infrastructure.persistence.repository.bus.BusJpaRepository;
 import com.flixbus.miniproject.infrastructure.persistence.repository.depot.DepotJpaRepository;
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.mock.mockito.SpyBean;
 
 import javax.inject.Inject;
+import java.util.Optional;
 import java.util.Set;
 
 import static io.restassured.RestAssured.given;
-import static java.net.HttpURLConnection.*;
+import static java.net.HttpURLConnection.HTTP_CONFLICT;
+import static java.net.HttpURLConnection.HTTP_OK;
+import static org.mockito.BDDMockito.when;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
-class DeleteDepotIT extends AbstractIT {
+class ParkBusToDepotIT extends AbstractIT {
 
     @Inject
     private BusJpaRepository busJpaRepository;
@@ -24,15 +32,23 @@ class DeleteDepotIT extends AbstractIT {
     @Inject
     private DepotJpaRepository depotJpaRepository;
 
-    @Test void
-    delete_a_depot_by_id() {
+    @SpyBean
+    private DepotRepository depotRepository;
 
-        depotJpaRepository.save(anEmptyDepotEntity());
+    @SpyBean
+    private BusRepository busRepository;
+
+    @Test void
+    park_buses_to_a_given_depot() {
+
+        // script?
+        busJpaRepository.save(aBusEntity());
+        depotJpaRepository.save(aDepotEntity());
 
         given()
                 .contentType(APPLICATION_JSON_VALUE)
                 .when()
-                .delete("/v1/depots/{depotId}", 1)
+                .post("/v1/depots/{depotId}/buses/{busIds}", 1L, 1L)
                 .then()
                 .statusCode(HTTP_OK)
                 .extract()
@@ -40,39 +56,47 @@ class DeleteDepotIT extends AbstractIT {
     }
 
     @Test void
-    fail_when_delete_a_non_existing_depot() {
+    fail_when_add_a_bus_to_a_full_depot() {
+
+        when(depotRepository.findDepotById(1L)).thenReturn(Optional.of(aFullDepot()));
+        when(busRepository.findBusById(1L)).thenReturn(Optional.of(aBus()));
+        when(busRepository.isBusParkedAlready(1L)).thenReturn(false);
+
 
         given()
                 .contentType(APPLICATION_JSON_VALUE)
                 .when()
-                .delete("/v1/depots/{depotId}", 1)
-                .then()
-                .statusCode(HTTP_NOT_FOUND)
-                .extract()
-                .statusCode();
-    }
-
-    @Test void
-    fail_when_delete_a_depot_with_buses() {
-
-        busJpaRepository.save(aBusEntity());
-        depotJpaRepository.save(aDepotEntity());
-
-        given()
-                .contentType(APPLICATION_JSON_VALUE)
-                .when()
-                .delete("/v1/depots/{depotId}", 1)
+                .post("/v1/depots/{depotId}/buses/{busIds}", 1L, 1L)
                 .then()
                 .statusCode(HTTP_CONFLICT)
                 .extract()
                 .statusCode();
     }
 
-    private DepotEntity anEmptyDepotEntity() {
-        return DepotEntity.DepotEntityBuilder.aDepotEntity()
+    @Test void
+    fail_when_a_bus_already_parked_on_another_depot() {
+
+        when(depotRepository.findDepotById(1L)).thenReturn(Optional.of(aFullDepot()));
+        when(busRepository.findBusById(1L)).thenReturn(Optional.of(aBus()));
+        when(busRepository.isBusParkedAlready(1L)).thenReturn(true);
+
+
+        given()
+                .contentType(APPLICATION_JSON_VALUE)
+                .when()
+                .post("/v1/depots/{depotId}/buses/{busIds}", 1L, 1L)
+                .then()
+                .statusCode(HTTP_CONFLICT)
+                .extract()
+                .statusCode();
+    }
+
+    private Depot aFullDepot() {
+        return Depot.DepotBuilder.aDepot()
                 .withId(1L)
                 .withName("Bavaria")
-                .withCapacity(12)
+                .withCapacity(1)
+                .withBuses(Set.of(aBus()))
                 .build();
     }
 
@@ -81,12 +105,21 @@ class DeleteDepotIT extends AbstractIT {
                 .withId(1L)
                 .withName("Bavaria")
                 .withCapacity(12)
-                .withBuses(Set.of(aBusEntity()))
                 .build();
     }
 
     private BusEntity aBusEntity() {
         return BusEntity.BusEntityBuilder.aBusEntity()
+                .withId(1L)
+                .withPlateNumber("1908IKH")
+                .withBusType(BusType.REGULAR)
+                .withBusColor(Color.GREEN)
+                .withCapacity(50)
+                .build();
+    }
+
+    private Bus aBus() {
+        return Bus.BusBuilder.aBus()
                 .withId(1L)
                 .withPlateNumber("1908IKH")
                 .withBusType(BusType.REGULAR)

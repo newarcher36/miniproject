@@ -15,7 +15,7 @@ public class GetBus {
     }
 
     public Bus getBusById(long busId) {
-        return busRepository.findByBusId(busId)
+        return busRepository.findBusById(busId)
                 .orElseThrow(() -> new BusNotFoundException("Bus not found with id: " + busId));
     }
 }

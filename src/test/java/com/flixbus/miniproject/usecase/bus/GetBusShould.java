@@ -42,7 +42,7 @@ class GetBusShould {
                 .withCapacity(50)
                 .build();
 
-        given(busRepository.findByBusId(1L)).willReturn(Optional.of(expected));
+        given(busRepository.findBusById(1L)).willReturn(Optional.of(expected));
 
         Bus retrievedBus = getBus.getBusById(1L);
 
@@ -54,7 +54,7 @@ class GetBusShould {
     @Test void
     fail_when_bus_not_found_by_given_id() {
 
-        given(busRepository.findByBusId(1L)).willReturn(Optional.empty());
+        given(busRepository.findBusById(1L)).willReturn(Optional.empty());
 
         Throwable throwable = catchThrowable(() -> getBus.getBusById(1L));
 

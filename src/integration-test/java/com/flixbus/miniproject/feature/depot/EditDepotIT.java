@@ -65,7 +65,7 @@ class EditDepotIT extends AbstractIT {
         return Depot.DepotBuilder.aDepot()
                 .withId(1L)
                 .withName("Bavaria")
-                .withBusCapacity(12)
+                .withCapacity(12)
                 .withBuses(emptySet())
                 .build();
     }
