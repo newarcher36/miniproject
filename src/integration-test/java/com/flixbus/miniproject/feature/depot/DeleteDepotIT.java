@@ -10,6 +10,7 @@ import com.flixbus.miniproject.infrastructure.persistence.repository.depot.Depot
 import org.junit.jupiter.api.Test;
 
 import javax.inject.Inject;
+import java.util.Collections;
 import java.util.Set;
 
 import static io.restassured.RestAssured.given;
@@ -73,6 +74,7 @@ class DeleteDepotIT extends AbstractIT {
                 .withId(1L)
                 .withName("Bavaria")
                 .withCapacity(12)
+                .withBuses(Collections.emptySet())
                 .build();
     }
 
@@ -88,7 +90,7 @@ class DeleteDepotIT extends AbstractIT {
     private BusEntity aBusEntity() {
         return BusEntity.BusEntityBuilder.aBusEntity()
                 .withId(1L)
-                .withPlateNumber("1908IKH")
+                .withPlateNumber("BUS-111-111")
                 .withBusType(BusType.REGULAR)
                 .withBusColor(Color.GREEN)
                 .withCapacity(50)

@@ -36,7 +36,7 @@ class GetBusShould {
     get_a_bus_by_id() {
         Bus expected = BusBuilder.aBus()
                 .withId(1L)
-                .withPlateNumber("8711HHL")
+                .withPlateNumber("BUS-111-111")
                 .withBusType(BusType.REGULAR)
                 .withBusColor(Color.GREEN)
                 .withCapacity(50)

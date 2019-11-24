@@ -2,14 +2,19 @@ package com.flixbus.miniproject.infrastructure.persistence.entity;
 
 import com.flixbus.miniproject.domain.bus.BusType;
 import com.flixbus.miniproject.domain.bus.Color;
+import lombok.EqualsAndHashCode;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.validation.constraints.Max;
 
 @Entity(name = "bus")
+@EqualsAndHashCode
 public class BusEntity extends AbstractEntity {
 
     @Column(unique = true, nullable = false)
@@ -27,6 +32,10 @@ public class BusEntity extends AbstractEntity {
     @Column(nullable = false)
     private int passengerCapacity;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "depot_id")
+    private DepotEntity depot;
+
     public BusEntity(){}
 
     private BusEntity(Long id, String plateNumber, BusType busType, Color busColor, int passengerCapacity) {
@@ -35,6 +44,10 @@ public class BusEntity extends AbstractEntity {
         this.busType = busType;
         this.busColor = busColor;
         this.passengerCapacity = passengerCapacity;
+    }
+
+    public void setDepot(DepotEntity depot) {
+        this.depot = depot;
     }
 
     public Long getId() {

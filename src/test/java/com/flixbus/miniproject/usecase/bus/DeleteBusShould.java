@@ -37,7 +37,7 @@ class DeleteBusShould {
 
         Bus currentBus = Bus.BusBuilder.aBus()
                 .withId(1L)
-                .withPlateNumber("8711HHL")
+                .withPlateNumber("BUS-111-111")
                 .withBusType(BusType.REGULAR)
                 .withBusColor(Color.GREEN)
                 .withCapacity(50)

@@ -20,7 +20,7 @@ import static org.mockito.Mockito.verify;
 @ExtendWith(MockitoExtension.class)
 class SaveBusShould {
 
-    private static final String PLATE_NUMBER = "8711HHL";
+    private static final String PLATE_NUMBER = "BUS-111-111";
     private SaveBus saveBus;
 
     @Mock
@@ -59,7 +59,7 @@ class SaveBusShould {
 
         assertThat(throwable)
                 .isInstanceOf(DuplicatePlateNumberException.class)
-                .hasMessage("A bus has already the plate number 8711HHL");
+                .hasMessage("A bus has already the plate number BUS-111-111");
     }
 
     private Bus aBus() {

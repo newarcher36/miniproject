@@ -23,7 +23,8 @@ import static org.mockito.Mockito.verify;
 @ExtendWith(MockitoExtension.class)
 class EditBusShould {
 
-    private static final String PLATE_NUMBER = "8711HHL";
+    private static final String PLATE_NUMBER = "BUS-111-111";
+    public static final String NEW_PLATE_NUMBER = "BUS-222-222";
     private EditBus editBus;
 
     @Mock
@@ -53,13 +54,13 @@ class EditBusShould {
         Bus currentBus = aBus();
         Bus busToEdit = BusBuilder.aBus()
                 .withId(1L)
-                .withPlateNumber("4309JHT")
+                .withPlateNumber(NEW_PLATE_NUMBER)
                 .withBusType(BusType.DOUBLE_DECKER)
                 .withBusColor(Color.GREEN)
                 .build();
 
         given(busRepository.findBusById(1L)).willReturn(Optional.of(currentBus));
-        given(busRepository.existsByPlateNumber("4309JHT")).willReturn(false);
+        given(busRepository.existsByPlateNumber(NEW_PLATE_NUMBER)).willReturn(false);
 
         editBus.execute(busToEdit);
 
@@ -86,19 +87,19 @@ class EditBusShould {
 
         Bus busToEdit = BusBuilder.aBus()
                 .withId(1L)
-                .withPlateNumber("4309JHT")
+                .withPlateNumber(NEW_PLATE_NUMBER)
                 .withBusType(BusType.DOUBLE_DECKER)
                 .withBusColor(Color.GREEN)
                 .build();
 
         given(busRepository.findBusById(1L)).willReturn(Optional.of(currentBus));
-        given(busRepository.existsByPlateNumber("4309JHT")).willReturn(true);
+        given(busRepository.existsByPlateNumber(NEW_PLATE_NUMBER)).willReturn(true);
 
         Throwable throwable = catchThrowable(() -> editBus.execute(busToEdit));
 
         assertThat(throwable)
                 .isInstanceOf(DuplicatePlateNumberException.class)
-                .hasMessage("Another bus has already this plate number: 4309JHT");
+                .hasMessage("Another bus has already this plate number: BUS-222-222");
     }
 
     private Bus aBus() {

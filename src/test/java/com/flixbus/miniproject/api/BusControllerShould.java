@@ -7,13 +7,12 @@ import com.flixbus.miniproject.domain.bus.BusType;
 import com.flixbus.miniproject.domain.bus.Color;
 import com.flixbus.miniproject.usecase.bus.DeleteBus;
 import com.flixbus.miniproject.usecase.bus.EditBus;
+import com.flixbus.miniproject.usecase.bus.FilterBuses;
 import com.flixbus.miniproject.usecase.bus.GetBus;
 import com.flixbus.miniproject.usecase.bus.SaveBus;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -26,9 +25,6 @@ import static org.mockito.Mockito.verify;
 class BusControllerShould {
 
     private BusController busController;
-
-    @Captor
-    private ArgumentCaptor<Bus> captor;
 
     @Mock
     private SaveBus saveBus;
@@ -45,9 +41,12 @@ class BusControllerShould {
     @Mock
     private BusDtoToBusMapper mapper;
 
+    @Mock
+    private FilterBuses filterBuses;
+
     @BeforeEach
     void init() {
-        busController = new BusController(saveBus, editBus, getBus, deleteBus, mapper);
+        busController = new BusController(saveBus, editBus, getBus, deleteBus, mapper, filterBuses);
     }
 
     @Test void
@@ -98,7 +97,7 @@ class BusControllerShould {
     private Bus aBus() {
         return BusBuilder.aBus()
                 .withId(1L)
-                .withPlateNumber("8711HHL")
+                .withPlateNumber("BUS-111-111")
                 .withBusType(BusType.REGULAR)
                 .withBusColor(Color.GREEN)
                 .withCapacity(50)
@@ -108,7 +107,7 @@ class BusControllerShould {
     private BusDto aBusDto() {
         return BusDto.BusDtoBuilder.aBusDto()
                 .withId(1L)
-                .withPlateNumber("8711HHL")
+                .withPlateNumber("BUS-111-111")
                 .withBusType(BusType.REGULAR)
                 .withBusColor(Color.GREEN)
                 .withCapacity(50)

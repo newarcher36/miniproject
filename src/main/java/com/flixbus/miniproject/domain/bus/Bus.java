@@ -47,6 +47,10 @@ public class Bus {
             throwException("Plate number is required");
         }
 
+        if (!plateNumber.trim().matches("BUS-\\d{3}-\\d{3}$")) {
+            throwException(String.format("Invalid bus plate number %s must have the following format: BUS-XXX-XXX",plateNumber));
+        }
+
         if (isNull(busType)) {
             throwException("Bus type is required");
         }

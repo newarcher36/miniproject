@@ -1,19 +1,12 @@
 package com.flixbus.miniproject.domain.bus.spec;
 
-import javax.inject.Named;
-
-@Named
 public class SearchCriteria {
 
-    private String key;
-    private String operation;
-    private Object value;
+    private final String key;
+    private final String operation;
+    private final String value;
 
-    public SearchCriteria() {
-    }
-
-    public SearchCriteria(final String key, final String operation, final Object value) {
-        super();
+    public SearchCriteria(String key, String operation, String value) {
         this.key = key;
         this.operation = operation;
         this.value = value;
@@ -23,23 +16,11 @@ public class SearchCriteria {
         return key;
     }
 
-    public void setKey(final String key) {
-        this.key = key;
-    }
-
     public String getOperation() {
         return operation;
     }
 
-    public void setOperation(final String operation) {
-        this.operation = operation;
-    }
-
-    public Object getValue() {
+    public String getValue() {
         return value;
-    }
-
-    public void setValue(final Object value) {
-        this.value = value;
     }
 }

@@ -1,7 +1,9 @@
 package com.flixbus.miniproject.infrastructure.persistence.entity;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity(name = "depot")
@@ -10,7 +12,7 @@ public class DepotEntity extends AbstractEntity {
     private String name;
     private int capacity;
 
-    @OneToMany
+    @OneToMany(mappedBy = "depot", cascade = CascadeType.ALL)
     private Set<BusEntity> buses;
 
     public DepotEntity(){}
@@ -20,6 +22,9 @@ public class DepotEntity extends AbstractEntity {
         this.name = name;
         this.capacity = capacity;
         this.buses = buses;
+        if (Objects.nonNull(buses)) {
+            this.buses.forEach(b -> b.setDepot(this));
+        }
     }
 
     public Long getId() {

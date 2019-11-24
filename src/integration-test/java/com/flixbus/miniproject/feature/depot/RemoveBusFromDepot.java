@@ -11,6 +11,8 @@ import org.junit.jupiter.api.Test;
 
 import javax.inject.Inject;
 
+import java.util.Collections;
+
 import static io.restassured.RestAssured.given;
 import static java.net.HttpURLConnection.HTTP_OK;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
@@ -27,7 +29,6 @@ class RemoveBusFromDepot extends AbstractIT {
     void
     remove_a_bus_from_a_given_depot() {
 
-        // script?
         busJpaRepository.save(aBusEntity());
         depotJpaRepository.save(aDepotEntity());
 
@@ -46,13 +47,14 @@ class RemoveBusFromDepot extends AbstractIT {
                 .withId(1L)
                 .withName("Bavaria")
                 .withCapacity(12)
+                .withBuses(Collections.emptySet())
                 .build();
     }
 
     private BusEntity aBusEntity() {
         return BusEntity.BusEntityBuilder.aBusEntity()
                 .withId(1L)
-                .withPlateNumber("1908IKH")
+                .withPlateNumber("BUS-111-111")
                 .withBusType(BusType.REGULAR)
                 .withBusColor(Color.GREEN)
                 .withCapacity(50)

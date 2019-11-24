@@ -1,7 +1,9 @@
 package com.flixbus.miniproject.domain.bus;
 
+import com.flixbus.miniproject.domain.bus.spec.SearchCriteria;
+
+import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 public interface BusRepository {
 
@@ -13,7 +15,7 @@ public interface BusRepository {
 
     void deleteBusById(long busId);
 
-    Set<Bus> findAllById(Set<Long> busIds);
+    List<Bus> findAllById(SearchCriteria criteria);
 
     boolean isBusParkedAlready(long busId);
 }

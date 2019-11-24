@@ -19,6 +19,8 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 class EditBusIT extends AbstractIT {
 
+    private static final String PLATE_NUMBER = "BUS-111-111";
+
     @SpyBean
     private BusRepository busRepository;
 
@@ -26,7 +28,7 @@ class EditBusIT extends AbstractIT {
     edit_an_existing_bus() {
 
         when(busRepository.findBusById(1L)).thenReturn(aBus());
-        when(busRepository.existsByPlateNumber("8711HHL")).thenReturn(false);
+        when(busRepository.existsByPlateNumber(PLATE_NUMBER)).thenReturn(false);
 
         given()
                 .contentType(APPLICATION_JSON_VALUE)
@@ -57,7 +59,7 @@ class EditBusIT extends AbstractIT {
     fail_when_edit_a_bus_with_duplicated_plate_number() {
 
         when(busRepository.findBusById(1L)).thenReturn(aBus());
-        when(busRepository.existsByPlateNumber("5721HHL")).thenReturn(true);
+        when(busRepository.existsByPlateNumber("BUS-222-222")).thenReturn(true);
 
         given()
                 .contentType(APPLICATION_JSON_VALUE)
@@ -73,7 +75,7 @@ class EditBusIT extends AbstractIT {
     private Optional<Bus> aBus() {
         return Optional.of(Bus.BusBuilder.aBus()
                 .withId(1L)
-                .withPlateNumber("8711HHL")
+                .withPlateNumber(PLATE_NUMBER)
                 .withBusType(BusType.DOUBLE_DECKER)
                 .withBusColor(Color.ORANGE)
                 .withCapacity(60)
@@ -83,7 +85,7 @@ class EditBusIT extends AbstractIT {
     private BusDto aBusDto() {
         return BusDtoBuilder.aBusDto()
                 .withId(1L)
-                .withPlateNumber("5721HHL")
+                .withPlateNumber("BUS-222-222")
                 .withBusType(BusType.REGULAR)
                 .withBusColor(Color.GREEN)
                 .withCapacity(50)

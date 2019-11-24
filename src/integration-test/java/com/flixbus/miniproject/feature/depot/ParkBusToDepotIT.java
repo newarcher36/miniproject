@@ -15,6 +15,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 
 import javax.inject.Inject;
+import java.util.Collections;
 import java.util.Optional;
 import java.util.Set;
 
@@ -41,7 +42,6 @@ class ParkBusToDepotIT extends AbstractIT {
     @Test void
     park_buses_to_a_given_depot() {
 
-        // script?
         busJpaRepository.save(aBusEntity());
         depotJpaRepository.save(aDepotEntity());
 
@@ -105,13 +105,14 @@ class ParkBusToDepotIT extends AbstractIT {
                 .withId(1L)
                 .withName("Bavaria")
                 .withCapacity(12)
+                .withBuses(Collections.emptySet())
                 .build();
     }
 
     private BusEntity aBusEntity() {
         return BusEntity.BusEntityBuilder.aBusEntity()
                 .withId(1L)
-                .withPlateNumber("1908IKH")
+                .withPlateNumber("BUS-111-111")
                 .withBusType(BusType.REGULAR)
                 .withBusColor(Color.GREEN)
                 .withCapacity(50)
@@ -121,7 +122,7 @@ class ParkBusToDepotIT extends AbstractIT {
     private Bus aBus() {
         return Bus.BusBuilder.aBus()
                 .withId(1L)
-                .withPlateNumber("1908IKH")
+                .withPlateNumber("BUS-111-111")
                 .withBusType(BusType.REGULAR)
                 .withBusColor(Color.GREEN)
                 .withCapacity(50)

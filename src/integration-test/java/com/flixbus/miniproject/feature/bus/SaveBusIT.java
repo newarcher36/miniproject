@@ -16,7 +16,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 class SaveBusIT extends AbstractIT {
 
-    private static final String PLATE_NUMBER = "8711HHL";
+    private static final String PLATE_NUMBER = "BUS-111-111";
 
     @SpyBean
     private BusRepository busRepository;
@@ -38,7 +38,7 @@ class SaveBusIT extends AbstractIT {
     @Test void
     fail_when_save_a_bus_with_duplicated_plate_number() {
 
-        when(busRepository.existsByPlateNumber("8711HHL")).thenReturn(true);
+        when(busRepository.existsByPlateNumber("BUS-111-111")).thenReturn(true);
 
         given()
                 .contentType(APPLICATION_JSON_VALUE)

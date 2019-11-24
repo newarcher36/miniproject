@@ -2,14 +2,17 @@ package com.flixbus.miniproject.infrastructure.persistence.repository.bus;
 
 import com.flixbus.miniproject.domain.bus.Bus;
 import com.flixbus.miniproject.domain.bus.BusRepository;
+import com.flixbus.miniproject.infrastructure.persistence.repository.spec.BusSpecification;
+import com.flixbus.miniproject.domain.bus.spec.SearchCriteria;
 import com.flixbus.miniproject.infrastructure.persistence.entity.BusEntity;
 import com.flixbus.miniproject.infrastructure.persistence.mapper.BusEntityToBusMapper;
 import com.flixbus.miniproject.infrastructure.persistence.mapper.BusToBusEntityMapper;
+import org.springframework.data.jpa.domain.Specification;
 
 import javax.inject.Named;
-import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
-import java.util.Set;
+import java.util.stream.Collectors;
 
 @Named
 public class BusHibernateJpaRepository implements BusRepository {
@@ -47,20 +50,15 @@ public class BusHibernateJpaRepository implements BusRepository {
     }
 
     @Override
-    public Set<Bus> findAllById(Set<Long> busIds) {
-        Set<Bus> buses = new HashSet<>();
-        busJpaRepository.findAllById(busIds)
-                .forEach(busEntity -> buses.add(mapTo(busEntity)));
-
-        return buses;
+    public List<Bus> findAllById(SearchCriteria searchCriteria) {
+        Specification<BusEntity> specification = new BusSpecification(searchCriteria);
+        return busJpaRepository.findAll(specification).stream()
+                .map(busEntityToBusMapper::map)
+                .collect(Collectors.toList());
     }
 
     @Override
     public boolean isBusParkedAlready(long busId) {
         return busJpaRepository.isBusParkedAlready(busId);
-    }
-
-    private Bus mapTo(BusEntity busEntity) {
-        return busEntityToBusMapper.map(busEntity);
     }
 }

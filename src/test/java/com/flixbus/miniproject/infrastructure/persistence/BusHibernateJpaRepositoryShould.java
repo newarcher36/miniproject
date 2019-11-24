@@ -17,11 +17,9 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
-import java.util.Set;
 
 import static com.flixbus.miniproject.domain.bus.Bus.BusBuilder;
 import static com.flixbus.miniproject.infrastructure.persistence.entity.BusEntity.BusEntityBuilder;
-import static java.util.Collections.singleton;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
@@ -29,7 +27,7 @@ import static org.mockito.Mockito.verify;
 @ExtendWith(MockitoExtension.class)
 class BusHibernateJpaRepositoryShould {
 
-    private static final String PLATE_NUMBER = "8711HHL";
+    private static final String PLATE_NUMBER = "BUS-111-111";
     private BusHibernateJpaRepository busHibernateJpaRepository;
 
     @Mock
@@ -82,21 +80,6 @@ class BusHibernateJpaRepositoryShould {
 
         assertThat(optionalBus.get())
                 .isEqualToComparingFieldByField(busEntity);
-    }
-
-    @Test void
-    find_all_by_bus_id() {
-
-        Set<Long> busIds = Set.of(1L);
-        BusEntity busEntity = aBusEntity();
-
-        given(busJpaRepository.findAllById(busIds)).willReturn(singleton(busEntity));
-        given(busEntityToBusMapper.map(busEntity)).willReturn(aBus());
-
-        Set<Bus> buses = busHibernateJpaRepository.findAllById(busIds);
-
-        assertThat(buses)
-                .contains(aBus());
     }
 
     @Test void

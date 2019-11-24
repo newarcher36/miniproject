@@ -50,7 +50,7 @@ class DeleteBusIT extends AbstractIT {
 
     private BusEntity aBusEntity() {
         return BusEntity.BusEntityBuilder.aBusEntity()
-                .withPlateNumber("1908IKH")
+                .withPlateNumber("BUS-111-111")
                 .withBusType(BusType.REGULAR)
                 .withBusColor(Color.GREEN)
                 .withCapacity(50)
