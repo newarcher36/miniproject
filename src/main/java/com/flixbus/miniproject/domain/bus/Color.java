@@ -22,7 +22,7 @@ public enum Color {
         Color busColor = colors.get(color.toUpperCase());
 
         if (isNull(busColor)) {
-            throw new IllegalArgumentException("Bus color does not exist");
+            throw new IllegalArgumentException(String.format("Bus color $s does not exist",color));
         }
 
         return busColor;
