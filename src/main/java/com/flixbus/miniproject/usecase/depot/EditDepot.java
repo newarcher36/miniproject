@@ -28,6 +28,6 @@ public class EditDepot {
     }
 
     private boolean notExists(long depotId) {
-        return depotRepository.findDepotById(depotId).isEmpty();
+        return !depotRepository.findDepotById(depotId).isPresent();
     }
 }
