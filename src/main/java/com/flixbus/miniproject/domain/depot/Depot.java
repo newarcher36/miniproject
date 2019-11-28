@@ -36,7 +36,7 @@ public class Depot {
     }
 
     public Set<Bus> getBuses() {
-        return Set.copyOf(buses);
+        return new HashSet<>(buses);
     }
 
     public void add(Bus bus) {
