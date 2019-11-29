@@ -6,4 +6,4 @@ COPY target/miniproject-1.0.jar .
 
 CMD java -jar miniproject-1.0.jar
 
-EXPOSE 8080
+EXPOSE 80
