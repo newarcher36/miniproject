@@ -5,5 +5,3 @@ WORKDIR /usr/src/myapp
 COPY target/miniproject-1.0.jar .
 
 CMD java -jar miniproject-1.0.jar
-
-EXPOSE 8080
