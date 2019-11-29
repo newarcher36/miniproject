@@ -18,3 +18,22 @@ script:
 
 after_success:
   - docker build -t newarcher36/miniproject -f Dockerfile.dev .
+
+deploy:
+  project: elasticbeanstalk
+  region: "us-east-2"
+  app: "miniproject"
+  env: "Miniproject-env"
+  bucket_name: "elasticbeanstalk-us-east-2-625283505629"
+  bucket_path: "miniproject"
+  on:
+    branch: master
+  access_key_id: $AWS_ACCESS_KEY
+  secret_access_key: $AWS_SECRET_KEY
+
+#deploy:
+#  edge: true
+#  provider: elasticbeanstalk
+#access_key_id: $AWS_ACCESS_KEY
+#secret_access_key: $AWS_SECRET_KEY
+
