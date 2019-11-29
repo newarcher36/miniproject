@@ -22,7 +22,6 @@ after_success:
 deploy:
   edge: true
   provider: elasticbeanstalk
-  project: elasticbeanstalk
   region: "us-east-2"
   app: "miniproject"
   env: "Miniproject-env"
