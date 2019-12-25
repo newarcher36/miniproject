@@ -1,5 +1,0 @@
-FROM openjdk:9
-
-WORKDIR /usr/src/myapp
-
-COPY target/miniproject-1.0.jar .

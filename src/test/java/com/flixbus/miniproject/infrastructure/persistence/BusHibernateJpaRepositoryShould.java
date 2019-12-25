@@ -77,7 +77,6 @@ class BusHibernateJpaRepositoryShould {
 
         assertThat(optionalBus)
                 .isPresent();
-
         assertThat(optionalBus.get())
                 .isEqualToComparingFieldByField(busEntity);
     }

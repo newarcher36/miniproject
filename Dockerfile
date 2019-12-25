@@ -1,8 +1,9 @@
-FROM openjdk:9
+FROM maven:3.6.3-jdk-11 AS build
+COPY src /usr/src/app/src
+COPY pom.xml /usr/src/app
+RUN mvn -f /usr/src/app/pom.xml clean package
 
-WORKDIR /usr/src/myapp
-
-CMD ls /usr/src/myapp
-#CMD java -jar miniproject-1.0.jar
-
-EXPOSE 80
+FROM openjdk:11
+COPY --from=build /usr/src/app/target/miniproject-1.0.jar /usr/app/miniproject-1.0.jar
+EXPOSE 8080
+ENTRYPOINT ["java","-jar","/usr/app/miniproject-1.0.jar"]
