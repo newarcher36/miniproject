@@ -2,11 +2,22 @@ version: '3'
 services:
   postgres:
     image: 'postgres:latest'
+    environment:
+      - POSTGRES_DB=flixbus_db
   server:
     build:
-      dockerfile: Dockerfile
       context: .
+      dockerfile: Dockerfile.dev
+    volumes:
+      - ./target:/usr/app/
+    image: miniproject
+    ports:
+      - "8080:8080"
+    restart: always
+    depends_on:
+      - postgres
     environment:
+      - POSTGRES_DB=flixbus_db
       - PGUSER=postgres
       - PGHOST=postgres
       - PGDATABASE=postgres
