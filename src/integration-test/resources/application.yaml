@@ -3,7 +3,7 @@ spring:
     active: test
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/flixbus_db
+    url: jdbc:postgresql://postgres:5432/flixbus_db
     username: newarcher
     password: newarcher_password
     initialization-mode: always
