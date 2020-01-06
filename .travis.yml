@@ -1,5 +1,11 @@
+os: linux
+
 language: java
 jdk: oraclejdk11
+
+addons:
+  hosts:
+    - postgres
 
 before_script:
   - psql -c "CREATE DATABASE flixbus_db;" -U postgres
@@ -16,9 +22,7 @@ services:
   - docker
   - postgresql
 
-addons:
-  hosts:
-    - postgres
+
 #env:
 #  global:
 #    - POSTGRES_DB=flixbus_db
