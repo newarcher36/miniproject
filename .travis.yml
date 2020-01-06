@@ -16,6 +16,7 @@ services:
 
 env:
   global:
+    - PGHOST=postgres
     - POSTGRES_DB=flixbus_db
     - POSTGRES_USER=newarcher
     - POSTGRES_PASSWORD=newarcher_password
