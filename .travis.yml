@@ -10,6 +10,7 @@ addons:
 before_script:
   - psql -c "CREATE DATABASE flixbus_db;" -U postgres
   - psql -c "CREATE USER newarcher WITH PASSWORD 'newarcher_password';" -U postgres
+  - echo "127.0.0.1 postgres" | sudo tee -a /etc/hosts
 
 before_install:
   - docker build -t newarcher/miniproject-test -f Dockerfile.dev .
