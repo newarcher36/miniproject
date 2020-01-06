@@ -1,7 +1,10 @@
 sudo: required
 
 language: java
-jdk: oraclejdk9
+jdk: oraclejdk11
+
+before_install:
+  - docker build -t newarcher/miniproject-test -f Dockerfile.dev .
 
 matrix:
   include:
@@ -12,23 +15,32 @@ matrix:
 
 services:
   - docker
+  - postgresql
 
-script:
-  - ./mvnw clean install -B
+env:
+  global:
+    - POSTGRES_DB=flixbus_db
+    - POSTGRES_USER=newarcher
+    - POSTGRES_PASSWORD=newarcher_password
+
+#script:
+#  - ./mvnw clean deploy -B
 
 after_success:
   - docker build -t newarcher36/miniproject -f .
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+  - docker push newarcher36/miniproject
 
-deploy:
-  edge: true
-  provider: elasticbeanstalk
-  region: "us-east-2"
-  app: "miniproject"
-  env: "Miniproject-env"
-  bucket_name: "elasticbeanstalk-us-east-2-625283505629"
-  bucket_path: "miniproject"
-  on:
-    branch: master
-  access_key_id: $AWS_ACCESS_KEY
-  secret_access_key: $AWS_SECRET_KEY
+#deploy:
+#  edge: true
+#  provider: elasticbeanstalk
+#  region: "us-east-2"
+#  app: "miniproject"
+#  env: "Miniproject-env"
+#  bucket_name: "elasticbeanstalk-us-east-2-625283505629"
+#  bucket_path: "miniproject"
+#  on:
+#    branch: master
+#  access_key_id: $AWS_ACCESS_KEY
+#  secret_access_key: $AWS_SECRET_KEY
 
