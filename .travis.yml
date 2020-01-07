@@ -3,17 +3,16 @@ os: linux
 language: java
 jdk: oraclejdk11
 
-addons:
-  hosts:
-    - postgres
+#addons:
+#  hosts:
+#    - postgres
 
-before_script:
-  - psql -c "CREATE DATABASE flixbus_db;" -U postgres
-  - psql -c "CREATE USER newarcher WITH PASSWORD 'newarcher_password';" -U postgres
-  - echo "127.0.0.1 postgres" | sudo tee -a /etc/hosts
+#before_script:
+#  - psql -c "CREATE DATABASE flixbus_db;" -U postgres
+#  - psql -c "CREATE USER newarcher WITH PASSWORD 'newarcher_password';" -U postgres
 
 before_install:
-  - docker build -t newarcher/miniproject-test -f Dockerfile.dev .
+  - docker-compose up -f docker-compose.dev.yml
 
 matrix:
   include:
@@ -21,7 +20,7 @@ matrix:
 
 services:
   - docker
-  - postgresql
+#  - postgresql
 
 
 #env:
