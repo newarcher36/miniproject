@@ -6,11 +6,10 @@ services:
       - POSTGRES_DB=flixbus_db
       - POSTGRES_USER=newarcher
       - POSTGRES_PASSWORD=newarcher_password
-  builder-server:
+  server:
+    depends_on:
+      - "postgres"
     build:
       context: .
       dockerfile: Dockerfile.dev
-    extra_hosts:
-      - "postgres:127.0.0.1"
-    depends_on:
-      - postgres
+    image: miniproject-test
