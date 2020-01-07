@@ -7,7 +7,7 @@ addons:
   hosts:
     - postgres
 
-before_script:
+before_install:
   - psql -c "CREATE DATABASE flixbus_db;" -U postgres
   - psql -c "CREATE ROLE archer WITH PASSWORD 'archer_password';" -U postgres
 
@@ -23,11 +23,11 @@ services:
   - postgresql
 
 
-#env:
-#  global:
-#    - POSTGRES_DB=flixbus_db
-#    - POSTGRES_USER=newarcher
-#    - POSTGRES_PASSWORD=newarcher_password
+env:
+  global:
+    - POSTGRES_DB=flixbus_db
+    - POSTGRES_USER=archer
+    - POSTGRES_PASSWORD=archer_password
 
 script:
   - docker build -t archer/miniproject-test -f Dockerfile.dev .
