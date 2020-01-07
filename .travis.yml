@@ -30,8 +30,8 @@ env:
     - POSTGRES_PASSWORD=archer_password
 
 script:
-  - docker build -t archer/miniproject-test -f Dockerfile.dev .
-#  - ./mvnw clean deploy -B
+#  - docker build -t archer/miniproject-test -f Dockerfile.dev .
+  - ./mvnw clean deploy -B
 
 after_success:
   - docker build -t archer36/miniproject -f .
