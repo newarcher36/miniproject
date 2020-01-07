@@ -31,7 +31,7 @@ env:
 
 script:
 #  - docker build -t archer/miniproject-test -f Dockerfile.dev .
-  - ./mvnw clean deploy -B
+  - ./mvnw clean install
 
 after_success:
   - docker build -t archer36/miniproject -f .
