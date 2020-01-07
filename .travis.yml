@@ -9,7 +9,7 @@ addons:
 
 before_script:
   - psql -c "CREATE DATABASE flixbus_db;" -U postgres
-  - psql -c "CREATE USER newarcher WITH PASSWORD 'newarcher_password';" -U postgres
+  - psql -c "CREATE USER archer WITH PASSWORD 'archer_password';" -U postgres
 
 #before_install:
 #  - docker-compose up -f docker-compose.dev.yml
@@ -30,13 +30,13 @@ services:
 #    - POSTGRES_PASSWORD=newarcher_password
 
 script:
-  - docker build -t newarcher/miniproject-test -f Dockerfile.dev .
+  - docker build -t archer/miniproject-test -f Dockerfile.dev .
 #  - ./mvnw clean deploy -B
 
 after_success:
-  - docker build -t newarcher36/miniproject -f .
+  - docker build -t archer36/miniproject -f .
   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
-  - docker push newarcher36/miniproject
+  - docker push archer36/miniproject
 
 #deploy:
 #  edge: true
