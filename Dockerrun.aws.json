@@ -1,0 +1,17 @@
+{
+   "AWSEBDockerrunVersion": 2,
+   "containerDefinitions":[
+     {
+       "name": "miniproject",
+       "image": "newarcher/miniproject",
+       "hostname": "server",
+       "essential": true,
+       "portMappings": [
+         {
+           "hostPort": 80,
+           "containerPort": 8080
+         }
+       ]
+     }
+   ]
+}

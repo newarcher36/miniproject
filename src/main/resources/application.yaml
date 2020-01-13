@@ -1,7 +1,7 @@
 spring:
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://postgres:5432/flixbus_db
+    url: jdbc:postgresql://${POSTGRES_HOST}:5432/flixbus_db
     username: archer
     password: archer_password
     initialization-mode: always

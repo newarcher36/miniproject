@@ -38,4 +38,15 @@ after_success:
   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
   - docker push archer36/miniproject
 
-
+deploy:
+  edge: true
+  provider: elasticbeanstalk
+  region: "eu-central-1"
+  app: "miniproject"
+  env: "Miniproject-env"
+  bucket_name: "elasticbeanstalk-eu-central-1-625283505629"
+  bucket_path: "miniproject"
+  on:
+    branch: master
+  access_key_id: $AWS_ACCESS_KEY
+  secret_access_key: $AWS_SECRET_KEY

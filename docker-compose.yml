@@ -4,8 +4,8 @@ services:
     image: 'postgres:latest'
     environment:
       - POSTGRES_DB=flixbus_db
-      - POSTGRES_USER=newarcher
-      - POSTGRES_PASSWORD=newarcher_password
+      - POSTGRES_USER=archer
+      - POSTGRES_PASSWORD=archer_password
   server:
     build:
       context: .
@@ -13,6 +13,8 @@ services:
     volumes:
       - ./target:/usr/app/
     image: miniproject
+    environment:
+      - POSTGRES_HOST=postgres
     ports:
       - "8080:8080"
     restart: always
