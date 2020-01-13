@@ -6,6 +6,7 @@
        "image": "newarcher/miniproject",
        "hostname": "server",
        "essential": true,
+       "memory": 128,
        "portMappings": [
          {
            "hostPort": 80,
