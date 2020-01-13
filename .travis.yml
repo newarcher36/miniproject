@@ -34,9 +34,9 @@ script:
   - ./mvnw clean install
 
 after_success:
-  - docker build -t archer36/miniproject -f .
+  - docker build -t newarcher/miniproject -f .
   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
-  - docker push archer36/miniproject
+  - docker push newarcher/miniproject
 
 deploy:
   edge: true
