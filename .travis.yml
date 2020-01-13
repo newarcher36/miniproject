@@ -34,7 +34,7 @@ script:
   - ./mvnw clean install
 
 after_success:
-  - docker build -t newarcher/miniproject -f .
+  - docker build . -t newarcher/miniproject
   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
   - docker push newarcher/miniproject
 
